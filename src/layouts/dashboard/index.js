@@ -6,9 +6,9 @@ import useSettings from "../../hooks/useSettings";
 import { Outlet } from "react-router-dom";
 import { Nav_Buttons } from "../../data";
 import { faker } from "@faker-js/faker";
+import { Gear } from "phosphor-react";
 
 import Logo from "../../assets/Images/logo.ico";
-import { Gear } from "phosphor-react";
 
 const DashboardLayout = () => {
   const theme = useTheme();
@@ -20,7 +20,7 @@ const DashboardLayout = () => {
   console.log(theme);
 
   return (
-    <>
+    <Stack direction="row">
       <Box
         p={2}
         sx={{
@@ -119,7 +119,7 @@ const DashboardLayout = () => {
         </Stack>
       </Box>
       <Outlet />
-    </>
+    </Stack>
   );
 };
 

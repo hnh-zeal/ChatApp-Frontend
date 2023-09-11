@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
-import { styled, useTheme, alpha } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { faker } from "@faker-js/faker";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -50,7 +50,10 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
       sx={{
         width: "100%",
         borderRadius: 1,
-        backgroundColor: theme.palette.mode === "light"? "#fff" : theme.palette.background.default,
+        backgroundColor:
+          theme.palette.mode === "light"
+            ? "#fff"
+            : theme.palette.background.default,
       }}
       p={2}
     >

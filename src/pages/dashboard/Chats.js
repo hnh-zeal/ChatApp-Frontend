@@ -27,7 +27,7 @@ const Chats = () => {
       sx={{
         position: "relative",
         width: 320,
-        backgroundColor: theme.palette.mode=== "light" ? "#F8FAFF" : theme.palette.background.paper,
+        backgroundColor: theme.palette.mode=== "light" ? "#F8FAFF" : theme.palette.background,
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
     >
@@ -57,7 +57,7 @@ const Chats = () => {
           </Stack>
           <Divider />
         </Stack>
-        <Stack direction="column" sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}>
+        <Stack direction="column" sx={{ flexGrow: 1, overflow: "hidden", height: "100%" }}>
           <SimpleBarStyle timeout={500} clickOnTrack={false}>
             <Stack spacing={2}>
               <Stack spacing={2}>

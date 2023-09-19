@@ -11,10 +11,12 @@ import {
 } from "@mui/material";
 import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
 import StyledBadge from "../StyledBadge.js";
+import { useDispatch } from "../../redux/store.js";
+import { ToggleSidebar } from "../../redux/slices/app.js";
 
 const Header = () => {
   const theme = useTheme();
-
+  const dispatch = useDispatch();
   return (
     <Box
       p={2}
@@ -34,7 +36,10 @@ const Header = () => {
         justifyContent={"space-between"}
         sx={{ width: "100%", height: "100%" }}
       >
-        <Stack direction={"row"} spacing={2}>
+        <Stack onClick={() => {
+          //
+          dispatch(ToggleSidebar())
+        }} direction={"row"} spacing={2}>
           <Box>
             <StyledBadge
               overlap="circular"

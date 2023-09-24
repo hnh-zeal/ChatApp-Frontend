@@ -17,7 +17,7 @@ const AuthSocial = () => {
       >
         OR
       </Divider>
-      <Stack direction={"row"} jusitfyContent="center" spacing={2}>
+      <Stack direction={"row"} justifyContent="center" spacing={2}>
         <IconButton>
           <GoogleLogo color="#DF3E30" />
         </IconButton>

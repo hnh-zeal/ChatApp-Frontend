@@ -3,6 +3,7 @@ import { Box, Stack } from "@mui/material";
 import Header from "./Header";
 import Footer from "./Footer";
 import Message from "./Message";
+import "../../global.css";
 
 const Conversation = () => {
   return (
@@ -10,7 +11,7 @@ const Conversation = () => {
       {/* Chat Header */}
       <Header />
       {/* Msg */}
-      <Box width={"100%"} sx={{ flexGrow: 1, height:"100%", overflowY: "scroll" }}>
+      <Box width={"100%"} className={"scrollbar"} sx={{ flexGrow: 1, height:"100%", overflowY: "scroll" }}>
         <Message menu={true}/>
       </Box>
       {/* Chat Footer */}

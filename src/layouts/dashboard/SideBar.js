@@ -59,7 +59,9 @@ const SideBar = () => {
               borderRadius: 1.5,
             }}
           >
-            <img src={Logo} alt={"Chat App"} />
+            <Stack alignItems="center" justifyContent="center">
+              <img src={Logo} width="65" height="65" alt={"Chat App"} />
+            </Stack>
           </Box>
           <Stack
             sx={{ width: "max-content" }}

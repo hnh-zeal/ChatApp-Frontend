@@ -28,16 +28,16 @@ const RegisterForm = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  const defaultValues = {
-    firstName: "",
-    lastName: "",
-    email: "demo@talkspire.com",
-    password: "demo1234",
-  };
+//   const defaultValues = {
+//     firstName: "",
+//     lastName: "",
+//     email: "demo@talkspire.com",
+//     password: "demo1234",
+//   };
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
-    defaultValues,
+    // defaultValues,
   });
 
   const {

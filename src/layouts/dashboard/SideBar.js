@@ -17,8 +17,30 @@ import { Gear } from "phosphor-react";
 
 import Logo from "../../assets/Images/logo.ico";
 
+import { useNavigate } from "react-router-dom";
+
+const getPath = (index) => {
+  switch (index) {
+    case 0:
+      return "/app";
+
+    case 1:
+      return "/group";
+
+    case 2:
+      return "/call";
+
+    case 3:
+      return "/settings";
+
+    default:
+      break;
+  }
+};
+
 const SideBar = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [selected, setSelected] = useState(0);
 
@@ -60,7 +82,16 @@ const SideBar = () => {
             }}
           >
             <Stack alignItems="center" justifyContent="center">
-              <img src={Logo} width="65" height="65" alt={"Chat App"} />
+              <img
+                onClick={() => {
+                  setSelected(0);
+                  navigate(getPath(0));
+                }}
+                src={Logo}
+                width="65"
+                height="65"
+                alt={"Chat App"}
+              />
             </Stack>
           </Box>
           <Stack
@@ -89,6 +120,7 @@ const SideBar = () => {
                 <IconButton
                   onClick={() => {
                     setSelected(el.index);
+                    navigate(getPath(el.index));
                   }}
                   sx={{
                     width: "max-content",
@@ -120,6 +152,7 @@ const SideBar = () => {
               <IconButton
                 onClick={() => {
                   setSelected(3);
+                  navigate(getPath(3));
                 }}
                 sx={{
                   width: "max-content",

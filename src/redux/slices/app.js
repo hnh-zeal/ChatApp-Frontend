@@ -1,7 +1,4 @@
-import { sliderClasses } from "@mui/material";
 import { createSlice } from "@reduxjs/toolkit";
-
-import { dispatch } from "../store";
 
 const initialState = {
   sidebar: {
@@ -29,13 +26,13 @@ export default slice.reducer;
 
 //
 export function ToggleSidebar() {
-  return async () => {
+  return async (dispatch, getState) => {
     dispatch(slice.actions.toggleSidebar());
   };
 }
 
 export function UpdateSidebarType(type) {
-  return async () => {
+  return async (dispatch, getState) => {
     dispatch(
       slice.actions.updateSidebarType({
         type,

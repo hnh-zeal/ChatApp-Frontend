@@ -11,17 +11,22 @@ import {
   Stack,
 } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
+import { useDispatch } from "react-redux";
+import { NewPassword } from "../../redux/slices/auth";
+import { useSearchParams } from "react-router-dom";
 
 const NewPasswordForm = () => {
+  const [queryParameters] = useSearchParams();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
 
   const NewtPasswordSchema = Yup.object().shape({
-    newPassword: Yup.string()
+    password: Yup.string()
       .min(8, "Password must be at least 8 characters")
       .required("Password is required"),
     confirmPassword: Yup.string()
-      .required("Password is required")
-      .oneOf([Yup.ref("newPassword"), null], "Password must match"),
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password"), null], "Password must match"),
   });
 
   const methods = useForm({
@@ -37,7 +42,8 @@ const NewPasswordForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Submit data to backend
+      console.log(data);
+      dispatch(NewPassword({ ...data, token: queryParameters.get("token") }));
     } catch (error) {
       console.log(error);
       reset();
@@ -56,7 +62,7 @@ const NewPasswordForm = () => {
         )}
 
         <RHFTextField
-          name="newPassword"
+          name="password"
           label="New Password"
           type={showPassword ? "text" : "password"}
           InputProps={{

@@ -18,8 +18,10 @@ import { Gear } from "phosphor-react";
 import Logo from "../../assets/Images/logo.ico";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { LogoutUser } from "../../redux/slices/auth";
 
-const getMenuPath = (index) => {
+const getMenuPath = (index, dispatch) => {
   switch (index) {
     case 0:
       return "/profile";
@@ -29,6 +31,7 @@ const getMenuPath = (index) => {
 
     case 2:
       // TODO => Update token && set isAuth = false
+      dispatch(LogoutUser());
       return "/auth/login";
 
     default:
@@ -56,6 +59,7 @@ const getPath = (index) => {
 };
 
 const SideBar = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -225,7 +229,7 @@ const SideBar = () => {
                 >
                   <Stack
                     onClick={() => {
-                      navigate(getMenuPath(idx));
+                      navigate(getMenuPath(idx, dispatch));
                     }}
                     sx={{ width: 100 }}
                     direction="row"

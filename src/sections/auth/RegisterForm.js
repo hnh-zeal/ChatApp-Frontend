@@ -54,6 +54,7 @@ const RegisterForm = () => {
   const onSubmit = async (data) => {
     try {
       // Submit data to backend
+      console.log(data);
       dispatch(RegisterUser(data));
     } catch (error) {
       console.log(error);

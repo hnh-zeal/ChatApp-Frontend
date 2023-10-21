@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import FormProvider, { RHFTextField } from "../../components/hook-form";
+import FormProvider, { RHFTextField } from "../../../components/hook-form";
 import {
   Alert,
   Button,

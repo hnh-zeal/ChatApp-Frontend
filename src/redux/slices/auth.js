@@ -4,9 +4,11 @@ import axios from "../../utils/axios";
 import { showSnackbar } from "./app";
 
 const initialState = {
-  isLoading: false,
   isLoggedIn: false,
   token: "",
+  isLoading: false,
+  user: null,
+  user_id: null,
   email: "",
   error: false,
 };
@@ -22,10 +24,12 @@ const slice = createSlice({
     logIn(state, action) {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.token = action.payload.token;
+      state.user_id = action.payload.user_id;
     },
     signOut(state, action) {
       state.isLoggedIn = false;
       state.token = "";
+      state.user_id = action.payload.user_id;
     },
     updateRegisterEmail(state, action) {
       state.email = action.payload.email;
@@ -40,7 +44,7 @@ export default slice.reducer;
 export function LoginUser(formValues) {
   // formValue => {email, password}
   return async (dispatch, getState) => {
-    console.log(formValues)
+    console.log(formValues);
     await axios
       .post(
         "/auth/login",
@@ -54,13 +58,16 @@ export function LoginUser(formValues) {
         }
       )
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         dispatch(
           slice.actions.logIn({
             isLoggedIn: true,
             token: response.data.token,
+            user_id: response.data.user_id,
           })
         );
+
+        window.localStorage.setItem("user_id", response.data.user_id);
 
         dispatch(
           showSnackbar({
@@ -68,6 +75,7 @@ export function LoginUser(formValues) {
             message: response?.data?.message,
           })
         );
+
       })
       .catch(function (error) {
         console.log(error);
@@ -84,6 +92,7 @@ export function LoginUser(formValues) {
 
 export function LogoutUser() {
   return async (dispatch, getState) => {
+    window.localStorage.removeItem("user_id");
     dispatch(slice.actions.signOut());
   };
 }
@@ -194,11 +203,18 @@ export function VerifyEmail(formValues) {
       )
       .then((response) => {
         console.log(response);
+        window.localStorage.setItem("user_id", response.data.user_id);
         dispatch(
           slice.actions.logIn({
             isLoggedIn: true,
             token: response.data.token,
           })
+        );
+        dispatch(
+          showSnackbar({ severity: "success", message: response.data.message })
+        );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
       })
       .catch((error) => {

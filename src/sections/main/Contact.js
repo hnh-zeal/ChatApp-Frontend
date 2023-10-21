@@ -25,10 +25,10 @@ import {
   VideoCamera,
   X,
 } from "phosphor-react";
-import { ToggleSidebar, UpdateSidebarType } from "../redux/slices/app";
+import { ToggleSidebar, UpdateSidebarType } from "../../redux/slices/app";
 import { useDispatch } from "react-redux";
 import { faker } from "@faker-js/faker";
-import AntSwtich from "./AntSwitch";
+import AntSwtich from "../../components/AntSwitch";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

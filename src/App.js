@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 // routes
 import Router from "./routes";
 // theme
@@ -5,12 +7,12 @@ import ThemeProvider from "./theme";
 // components
 import ThemeSettings from "./components/settings";
 import { Snackbar } from "@mui/material";
-import React from "react";
 import MuiAlert from "@mui/material/Alert";
-import { useDispatch, useSelector } from "react-redux";
 import { closeSnackbar } from "./redux/slices/app";
 // css
 import "./global.css";
+
+import { socket } from "./socket";
 
 const vertical = "bottom";
 const horizontal = "center";

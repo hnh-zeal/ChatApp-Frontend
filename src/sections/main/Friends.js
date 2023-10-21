@@ -6,6 +6,7 @@ import {
   FetchFriends,
   FetchUsers,
 } from "../../redux/slices/app";
+import { UserElement, FriendRequestElement, FriendElement } from "../../components/Friends";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -17,8 +18,7 @@ const UsersList = () => {
   return (
     <>
       {users.map((el, index) => {
-        // TODO
-        return <>Users</>;
+        return <UserElement key={el._id} {...el} />;
       })}
     </>
   );
@@ -34,8 +34,7 @@ const FriendsList = () => {
   return (
     <>
       {friends.map((el, index) => {
-        // TODO
-        return <>Friends</>;
+        return <FriendElement key={el._id} {...el}/>;
       })}
     </>
   );
@@ -48,11 +47,12 @@ const FriendRequestsList = () => {
   }, []);
 
   const { friendRequests } = useSelector((state) => state.app);
+  
   return (
     <>
       {friendRequests.map((el, index) => {
-        // TODO
-        return <>Requests</>;
+        // el => { _id, sender: { _id, firstName, lastName, img, online } }
+        return <FriendRequestElement key={el._id} {...el.sender} id={el._id} />;
       })}
     </>
   );

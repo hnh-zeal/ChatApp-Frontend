@@ -1,5 +1,12 @@
 import React from "react";
-import { Avatar, Badge, Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Avatar,
+  Typography,
+  IconButton,
+  Button,
+} from "@mui/material";
 import { useTheme, styled } from "@mui/material/styles";
 import StyledBadge from "./StyledBadge";
 import { socket } from "../socket";
@@ -65,8 +72,14 @@ const UserElement = ({ img, firstName, lastName, online, _id }) => {
   );
 };
 
-const FriendRequestElement = ({ img, firstName, lastName, online, _id, id, }) => {
-  
+const FriendRequestElement = ({
+  img,
+  firstName,
+  lastName,
+  online,
+  _id,
+  id,
+}) => {
   const theme = useTheme();
   const name = `${firstName} ${lastName}`;
 
@@ -118,7 +131,6 @@ const FriendRequestElement = ({ img, firstName, lastName, online, _id, id, }) =>
 };
 
 const FriendElement = ({ img, firstName, lastName, online, _id }) => {
-  
   const theme = useTheme();
   const name = `${firstName} ${lastName}`;
 
@@ -157,8 +169,9 @@ const FriendElement = ({ img, firstName, lastName, online, _id }) => {
           <IconButton
             onClick={() => {
               // Start a new conversation
-              socket.emit("start_conversation", {to: _id, from: user_id})
-            }}>
+              socket.emit("start_conversation", { to: _id, from: user_id });
+            }}
+          >
             <Chat />
           </IconButton>
         </Stack>
@@ -167,4 +180,4 @@ const FriendElement = ({ img, firstName, lastName, online, _id }) => {
   );
 };
 
-export { UserElement, FriendRequestElement, FriendElement};
+export { UserElement, FriendRequestElement, FriendElement };

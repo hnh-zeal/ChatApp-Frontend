@@ -1,17 +1,17 @@
 import React from "react";
 import Chats from "./Chats";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Conversation from "../../components/Conversation";
-import Contact from "../../sections/main/Contact";
+import Conversation from "./Conversation";
+import Contact from "../../sections/dashboard/Contact";
 import { useSelector } from "react-redux";
 import SharedMessages from "../../components/SharedMessages";
 import StarredMessages from "../../components/StarredMessages";
-import NoChatSVG from "../../assets/Illustration/NoChat";
+import NoChat from "./NoChat";
 
 const GeneralApp = () => {
   const theme = useTheme();
-  const { sidebar, chat_type, room_id } = useSelector((store) => store.app);
+  const { sideBar, chat_type, room_id } = useSelector((store) => store.app);
   return (
     <Stack direction={"row"} sx={{ width: "100%" }}>
       {/* Chats */}
@@ -21,33 +21,24 @@ const GeneralApp = () => {
       <Box
         sx={{
           height: "100%",
-          width: sidebar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
+          width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
           backgroundColor:
             theme.palette.mode === "light"
               ? "#F0F4FA"
               : theme.palette.background.paper,
+          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         }}
       >
         {room_id !== null && chat_type === "individual" ? (
           <Conversation />
         ) : (
-          <Stack
-            spacing={2}
-            sx={{ height: "100%", width: "100%" }}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <NoChatSVG />
-            <Typography variant="subtitle2">
-              Select a Conversation or Start a new one
-            </Typography>
-          </Stack>
+          <NoChat />
         )}
       </Box>
       {/* Contact */}
-      {sidebar.open &&
+      {sideBar.open &&
         (() => {
-          switch (sidebar.type) {
+          switch (sideBar.type) {
             case "CONTACT":
               return <Contact />;
             case "STARRED":

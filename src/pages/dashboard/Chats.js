@@ -22,24 +22,29 @@ import {
   MagnifyingGlass,
   User,
 } from "phosphor-react";
-import Friends from "../../sections/main/Friends";
+import Friends from "../../sections/dashboard/Friends";
 import { socket } from "../../socket";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { FetchConversations } from "../../redux/slices/conversation";
 
 const user_id = window.localStorage.getItem("user_id");
 
 const Chats = () => {
   const theme = useTheme();
-  const [openDialog, setOpenDialog] = useState(false);
-
+  const dispatch = useDispatch();
+  
   const { conversations } = useSelector((state) => state.conversation.chat);
-
+  
   useEffect(() => {
     socket.emit("get_conversations", { user_id }, (data) => {
       // data => list of conversations
+      // console.log(data);
+      dispatch(FetchConversations({ conversations: data }));
     });
   }, []);
-
+  
+  const [openDialog, setOpenDialog] = useState(false);
+  
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };

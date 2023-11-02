@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // routes
 import Router from "./routes";
@@ -8,11 +8,9 @@ import ThemeProvider from "./theme";
 import ThemeSettings from "./components/settings";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import { closeSnackbar } from "./redux/slices/app";
+import { closeSnackBar } from "./redux/slices/app";
 // css
 import "./global.css";
-
-import { socket } from "./socket";
 
 const vertical = "bottom";
 const horizontal = "center";
@@ -44,12 +42,12 @@ function App() {
           autoHideDuration={4000}
           key={vertical + horizontal}
           onClose={() => {
-            dispatch(closeSnackbar());
+            dispatch(closeSnackBar());
           }}
         >
           <Alert
             onClose={() => {
-              dispatch(closeSnackbar());
+              dispatch(closeSnackBar());
             }}
             severity={severity}
             sx={{ width: "100%" }}

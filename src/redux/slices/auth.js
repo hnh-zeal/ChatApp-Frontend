@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import axios from "../../utils/axios";
 import { showSnackbar } from "./app";
+import { ResetInitialStates } from "./conversation";
 
 const initialState = {
   isLoggedIn: false,
@@ -75,7 +76,6 @@ export function LoginUser(formValues) {
             message: response?.data?.message,
           })
         );
-
       })
       .catch(function (error) {
         console.log(error);
@@ -92,8 +92,20 @@ export function LoginUser(formValues) {
 
 export function LogoutUser() {
   return async (dispatch, getState) => {
+    dispatch(
+      slice.actions.signOut({
+        isLoggedIn: false,
+        token: "",
+        isLoading: false,
+        user: null,
+        user_id: null,
+        email: "",
+        error: false,
+      })
+    );
     window.localStorage.removeItem("user_id");
-    dispatch(slice.actions.signOut());
+    console.log("ee");
+    ResetInitialStates();
   };
 }
 
@@ -202,7 +214,7 @@ export function VerifyEmail(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         window.localStorage.setItem("user_id", response.data.user_id);
         dispatch(
           slice.actions.logIn({

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Divider,
@@ -11,16 +12,20 @@ import { useTheme } from "@mui/material/styles";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import { ChatList } from "../../data";
 import ChatElement from "../../components/ChatElement";
+import Conversation from "../../components/Conversation";
 import {
   Search,
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import CreateGroup from "../../sections/main/CreateGroup";
+import CreateGroup from "../../sections/dashboard/CreateGroup";
 import "../../global.css";
+import NoChat from "./NoChat";
 
 const Group = () => {
   const theme = useTheme();
+
+  const { sidebar, chat_type, room_id } = useSelector((store) => store.app);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -53,7 +58,7 @@ const Group = () => {
             >
               <Typography variant="h5">Groups</Typography>
             </Stack>
-
+            
             {/* Search */}
             <Stack sx={{ width: "100%" }}>
               <Search>
@@ -122,6 +127,22 @@ const Group = () => {
         </Box>
 
         {/* Right */}
+        <Box
+          sx={{
+            height: "100%",
+            width: sidebar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
+            backgroundColor:
+              theme.palette.mode === "light"
+                ? "#F0F4FA"
+                : theme.palette.background.paper,
+          }}
+        >
+          {room_id !== null && chat_type === "individual" ? (
+            <Conversation />
+          ) : (
+            <NoChat />
+          )}
+        </Box>
       </Stack>
       {openDialog && (
         <CreateGroup open={openDialog} handleClose={handleCloseDialog} />

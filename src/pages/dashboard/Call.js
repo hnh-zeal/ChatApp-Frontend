@@ -17,7 +17,7 @@ import {
 } from "../../components/Search";
 import "../../global.css";
 import { CallLogs } from "../../data";
-import StartCall from "../../sections/main/StartCall";
+import StartCall from "../../sections/dashboard/StartCall";
 
 const Call = () => {
   const theme = useTheme();

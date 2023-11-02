@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogContent, Stack, Tab, Tabs } from "@mui/material";
+import { Dialog, DialogContent, Slide, Stack, Tab, Tabs } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchFriendRequests,
   FetchFriends,
   FetchUsers,
 } from "../../redux/slices/app";
-import { UserElement, FriendRequestElement, FriendElement } from "../../components/Friends";
+import {
+  UserElement,
+  FriendRequestElement,
+  FriendElement,
+} from "../../components/Friends";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const UsersList = () => {
   const dispatch = useDispatch();
+  
+  const { users } = useSelector((state) => state.app);
+  
   useEffect(() => {
     dispatch(FetchUsers());
-  }, []);
+  }, [dispatch]);
 
-  const { users } = useSelector((state) => state.app);
+
   return (
     <>
       {users.map((el, index) => {
-        return <UserElement key={el._id} {...el} />;
+        return <UserElement key={index} {...el} />;
       })}
     </>
   );
@@ -34,7 +45,7 @@ const FriendsList = () => {
   return (
     <>
       {friends.map((el, index) => {
-        return <FriendElement key={el._id} {...el}/>;
+        return <FriendElement key={index} {...el} />;
       })}
     </>
   );
@@ -44,15 +55,15 @@ const FriendRequestsList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(FetchFriendRequests());
-  }, []);
+  }, [dispatch]);
 
   const { friendRequests } = useSelector((state) => state.app);
-  
+
   return (
     <>
       {friendRequests.map((el, index) => {
         // el => { _id, sender: { _id, firstName, lastName, img, online } }
-        return <FriendRequestElement key={el._id} {...el.sender} id={el._id} />;
+        return <FriendRequestElement key={index} {...el.sender} id={el._id} />;
       })}
     </>
   );
@@ -71,8 +82,10 @@ const Friends = ({ open, handleClose }) => {
         fullWidth
         maxWidth="xs"
         open={open}
+        TransitionComponent={Transition}
         keepMounted
-        onClick={handleClose}
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
         sx={{ p: 4 }}
       >
         <Stack p={2} sx={{ width: "100%" }}>
@@ -86,20 +99,10 @@ const Friends = ({ open, handleClose }) => {
         {/* Dialog Content */}
         <DialogContent>
           <Stack sx={{ height: "100%" }}>
-            <Stack spacing={2.5}>
-              {() => {
-                switch (value) {
-                  case 0: // display all users
-                    return <UsersList />;
-                  case 1: // display all friends
-                    return <FriendsList />;
-                  case 2: // display all friend-requests
-                    return <FriendRequestsList />;
-
-                  default:
-                    break;
-                }
-              }}
+            <Stack spacing={2.4}>
+              {value === 0 && <UsersList />}
+              {value === 1 && <FriendsList />}
+              {value === 2 && <FriendRequestsList />}
             </Stack>
           </Stack>
         </DialogContent>

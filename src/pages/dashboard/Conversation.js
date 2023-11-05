@@ -13,7 +13,7 @@ import {
   Timeline,
 } from "../../components/Conversation/MsgTypes";
 import { useDispatch, useSelector } from "react-redux";
-import {
+import conversation, {
   FetchCurrentMessages,
   SetCurrentConversation,
 } from "../../redux/slices/conversation";
@@ -25,7 +25,7 @@ const Conversation = ({ isMobile, menu }) => {
   const { conversations, current_messages } = useSelector(
     (state) => state.conversation.chat
   );
-  const { room_id } = useSelector((state) => state.app);
+  const { room_id } = useSelector((state) => state.conversation);
 
   useEffect(() => {
     const current = conversations.find((el) => el?.id === room_id);
@@ -35,7 +35,7 @@ const Conversation = ({ isMobile, menu }) => {
       dispatch(FetchCurrentMessages({ messages: data }));
     });
 
-    console.log(current);
+    console.log("Current", current);
 
     dispatch(SetCurrentConversation(current));
   }, []);
@@ -48,7 +48,7 @@ const Conversation = ({ isMobile, menu }) => {
             case "divider":
               return (
                 // Timeline
-                <Timeline el={el} key={idx}/>
+                <Timeline el={el} key={idx} />
               );
 
             case "msg":
@@ -56,30 +56,30 @@ const Conversation = ({ isMobile, menu }) => {
                 case "img":
                   return (
                     // Media Message
-                    <MediaMsg el={el} menu={menu} key={idx}/>
+                    <MediaMsg el={el} menu={menu} key={idx} />
                   );
 
                 case "doc":
                   return (
                     // Doc Message
-                    <DocMsg el={el} menu={menu} key={idx}/>
+                    <DocMsg el={el} menu={menu} key={idx} />
                   );
                 case "Link":
                   return (
                     //  Link Message
-                    <LinkMsg el={el} menu={menu} key={idx}/>
+                    <LinkMsg el={el} menu={menu} key={idx} />
                   );
 
                 case "reply":
                   return (
                     //  ReplyMessage
-                    <ReplyMsg el={el} menu={menu} key={idx}/>
+                    <ReplyMsg el={el} menu={menu} key={idx} />
                   );
 
                 default:
                   return (
                     // Text Message
-                    <TextMsg el={el} menu={menu} key={idx}/>
+                    <TextMsg el={el} menu={menu} key={idx} />
                   );
               }
 
@@ -97,10 +97,9 @@ const ChatComponent = () => {
   const theme = useTheme();
 
   const messageListRef = useRef(null);
+  const { sideBar } = useSelector((store) => store.app);
 
-  const { current_messages } = useSelector(
-    (state) => state.conversation.chat
-  );
+  const { current_messages, current_conversation } = useSelector((state) => state.conversation.chat);
 
   useEffect(() => {
     // Scroll to the bottom of the message list when new messages are added
@@ -108,36 +107,42 @@ const ChatComponent = () => {
   }, [current_messages]);
 
   return (
-    <Stack
-      height={"100%"}
-      maxHeight={"100vh"}
-      width={isMobile ? "100vw" : "auto"}
+    <Box
+      sx={{
+        height: "100%",
+        width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
+      }}
     >
-      {/*  */}
-      <ChatHeader />
-      <Box
-        ref={messageListRef}
-        width={"100%"}
-        className="scrollbar"
-        sx={{
-          position: "relative",
-          flexGrow: 1,
-          overflow: "scroll",
-
-          backgroundColor:
-            theme.palette.mode === "light"
-              ? "#F0F4FA"
-              : theme.palette.background,
-
-          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-        }}
+      <Stack
+        height={"100%"}
+        maxHeight={"100vh"}
+        width={isMobile ? "100vw" : "auto"}
       >
-        <Conversation menu={true} isMobile={isMobile} />
-      </Box>
+        {/* Header */}
+        <ChatHeader {...current_conversation}/>
+        <Box
+          ref={messageListRef}
+          width={"100%"}
+          className="scrollbar"
+          sx={{
+            position: "relative",
+            flexGrow: 1,
+            overflow: "scroll",
 
-      {/*  */}
-      <ChatFooter />
-    </Stack>
+            backgroundColor:
+              theme.palette.mode === "light"
+                ? "#F0F4FA"
+                : theme.palette.background.paper,
+            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          <Conversation menu={true} isMobile={isMobile} />
+        </Box>
+
+        {/* Footer  */}
+        <ChatFooter />
+      </Stack>
+    </Box>
   );
 };
 

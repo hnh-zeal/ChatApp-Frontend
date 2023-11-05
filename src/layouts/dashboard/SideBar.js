@@ -20,7 +20,7 @@ const getPath = (index) => {
       return "/app";
 
     case 1:
-      return "/group";
+      return "/friends";
 
     case 2:
       return "/call";
@@ -146,8 +146,6 @@ const SideBar = () => {
                 <IconButton
                   onClick={() => {
                     handleChangeTab(el.index);
-
-                    // dispatch(UpdateTab(el.index));
                   }}
                   sx={{
                     width: "max-content",

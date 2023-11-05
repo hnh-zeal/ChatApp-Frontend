@@ -62,7 +62,17 @@ const Conversation_Menu = [
   },
 ];
 
-const ChatHeader = () => {
+const ChatHeader = ({
+  id,
+  img,
+  msg,
+  name,
+  online,
+  pinned,
+  time,
+  unread,
+  user_id,
+}) => {
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
@@ -83,7 +93,7 @@ const ChatHeader = () => {
       width={"100%"}
       sx={{
         backgroundColor:
-          theme.palette.mode === "light" ? "#F8FAFF" : theme.palette.background,
+          theme.palette.mode === "light" ? "#f8faff" : theme.palette.background,
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
     >
@@ -110,12 +120,12 @@ const ChatHeader = () => {
               }}
               variant="dot"
             >
-              <Avatar alt={faker.name.fullName()} src={faker.image.avatar()} />
+              <Avatar alt={name} src={img} />
             </StyledBadge>
           </Box>
           <Stack spacing={0.2}>
-            <Typography variant="subtitle2">{faker.name.fullName()}</Typography>
-            <Typography variant="caption">Online</Typography>
+            <Typography variant="subtitle2">{name}</Typography>
+            <Typography variant="caption">{online ? "Online" : "Offline"} </Typography>
           </Stack>
         </Stack>
         <Stack direction={"row"} alignItems="center" spacing={isMobile ? 1 : 3}>

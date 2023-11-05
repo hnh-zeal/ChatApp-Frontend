@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,6 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-// import { LoadingButton } from "@mui/lab";
 import { Eye, EyeSlash } from "phosphor-react";
 import { LoginUser } from "../../redux/slices/auth";
 
@@ -23,7 +22,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
 
-  // const {isLoading} = useSelector((state) => state.auth);
+  const {isLoading} = useSelector((state) => state.auth);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -109,7 +108,7 @@ const LoginForm = () => {
         size="large"
         type="submit"
         variant="contained"
-        // loading={isLoading}
+        loading={isLoading}
         sx={{
           bgcolor: "text.primary",
           color: (theme) =>

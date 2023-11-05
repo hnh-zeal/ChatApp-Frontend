@@ -1,20 +1,34 @@
 import React from "react";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import NoChatSVG from "../../assets/Illustration/NoChat";
+import { useTheme } from "@mui/material/styles";
+
 
 const NoChat = () => {
+  const theme = useTheme();
+
   return (
-    <Stack
-      spacing={2}
-      sx={{ height: "100%", width: "100%" }}
-      alignItems="center"
-      justifyContent="center"
+    <Box
+      sx={{
+        height: "100%",
+        width: "calc(100vw - 420px)",
+        backgroundColor:
+          theme.palette.mode === "light" ? "#F0F4FA" : theme.palette.background.paper,
+        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+      }}
     >
-      <NoChatSVG />
-      <Typography variant="subtitle2">
-        Select a Conversation or Start a new one
-      </Typography>
-    </Stack>
+      <Stack
+        spacing={2}
+        sx={{ height: "100%", width: "100%" }}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <NoChatSVG />
+        <Typography variant="subtitle2">
+          Select a Conversation or Start a new one
+        </Typography>
+      </Stack>
+    </Box>
   );
 };
 

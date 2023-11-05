@@ -3,11 +3,9 @@ import { Stack } from "@mui/material";
 import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  FetchUserProfile,
-  SelectConversation,
-  showSnackbar,
-} from "../../redux/slices/app";
+import { FetchUserProfile, showSnackbar } from "../../redux/slices/app";
+import { SelectConversation } from "../../redux/slices/conversation";
+
 import { socket, connectSocket } from "../../socket";
 import {
   UpdateConversation,
@@ -57,14 +55,14 @@ const DashboardLayout = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      window.onload = function () {
-        if (!window.location.hash) {
-          window.location = window.location + "#loaded";
-          window.location.reload();
-        }
-      };
+      // window.onload = function () {
+      //   if (!window.location.hash) {
+      //     window.location = window.location + "#loaded";
+      //     window.location.reload();
+      //   }
+      // };
 
-      window.onload();
+      // window.onload();
 
       if (!socket) {
         connectSocket(user_id);
@@ -99,8 +97,8 @@ const DashboardLayout = () => {
       });
 
       socket.on("open_chat", (data) => {
-        console.log(data);
         // add / update to conversation list
+        console.log(conversations);
         const existing_conversation = conversations.find(
           (el) => el?.id === data._id
         );
@@ -147,7 +145,6 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     };
-
   }, [[isLoggedIn, socket, user_id, dispatch]]);
 
   if (!isLoggedIn) {

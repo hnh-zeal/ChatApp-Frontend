@@ -104,8 +104,8 @@ export function LogoutUser() {
       })
     );
     window.localStorage.removeItem("user_id");
-    console.log("ee");
-    ResetInitialStates();
+    console.log("Logging Out");
+    dispatch(ResetInitialStates());
   };
 }
 

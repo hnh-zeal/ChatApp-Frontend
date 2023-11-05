@@ -37,11 +37,9 @@ const Chats = () => {
   
   useEffect(() => {
     socket.emit("get_conversations", { user_id }, (data) => {
-      // data => list of conversations
-      // console.log(data);
       dispatch(FetchConversations({ conversations: data }));
     });
-  }, []);
+  }, [dispatch, conversations]);
   
   const [openDialog, setOpenDialog] = useState(false);
   

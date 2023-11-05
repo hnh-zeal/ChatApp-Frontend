@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Chats from "./Chats";
 import { Box, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -10,31 +10,25 @@ import StarredMessages from "../../components/StarredMessages";
 import NoChat from "./NoChat";
 
 const GeneralApp = () => {
-  const theme = useTheme();
-  const { sideBar, chat_type, room_id } = useSelector((store) => store.app);
+  const { sideBar } = useSelector((store) => store.app);
+  const { chat_type, room_id } = useSelector((store) => store.conversation);
+  const { current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
+
   return (
     <Stack direction={"row"} sx={{ width: "100%" }}>
       {/* Chats */}
       <Chats />
 
       {/* Conversation */}
-      <Box
-        sx={{
-          height: "100%",
-          width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
-          backgroundColor:
-            theme.palette.mode === "light"
-              ? "#F0F4FA"
-              : theme.palette.background.paper,
-          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-        }}
-      >
-        {room_id !== null && chat_type === "individual" ? (
-          <Conversation />
-        ) : (
-          <NoChat />
-        )}
-      </Box>
+      {(room_id !== null && chat_type === "individual") ||
+      current_conversation ? (
+        <Conversation />
+      ) : (
+        <NoChat />
+      )}
+
       {/* Contact */}
       {sideBar.open &&
         (() => {

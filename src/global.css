@@ -3,12 +3,21 @@
     background-color: transparent;
   }
   
-  .scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 20px;
-    background-color: transparent;
-  }
-  
-  .scrollbar:hover::-webkit-scrollbar-thumb {
-    border-radius: 20px;
-    background: #6c6b6b;
-  }
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background-color: transparent;
+}
+
+.scrollbar:hover::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #6c6b6b;
+}
+
+.loadingPaper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-radius: 15px;
+  height: 39vh;
+}

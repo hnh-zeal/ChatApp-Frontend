@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { CaretLeft } from "phosphor-react";
-import ProfileForm from "../../sections/dashboard/settings/ProfileForm";
+import ProfileForm from "../../../sections/dashboard/Settings/ProfileForm";
 import { useDispatch } from "react-redux";
-import { FetchUserProfile } from "../../redux/slices/app";
+import { FetchUserProfile } from "../../../redux/slices/app";
 
 const Profile = () => {
+  
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -18,6 +19,8 @@ const Profile = () => {
         {/* Left Pane */}
         <Box
           sx={{
+            overflowY: "scroll",
+
             height: "100vh",
             width: 320,
             backgroundColor: (theme) =>

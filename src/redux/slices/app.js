@@ -21,8 +21,7 @@ const initialState = {
   users: [],
   friends: [],
   friendRequests: [],
-  chat_type: null,
-  room_id: null,
+  sentRequests: [],
   call_logs: [],
 };
 
@@ -76,10 +75,8 @@ const slice = createSlice({
     updateFriendRequests(state, action) {
       state.friendRequests = action.payload.friendRequests;
     },
-
-    selectConversation(state, action) {
-      state.chat_type = "individual";
-      state.room_id = action.payload.room_id;
+    updateSentRequests(state, action) {
+      state.sentRequests = action.payload.sentRequests;
     },
   },
 });
@@ -141,7 +138,7 @@ export const FetchUsers = () => {
         },
       })
       .then((response) => {
-        console.log(response);
+        console.log(response.data.data);
         dispatch(slice.actions.updateUsers({ users: response.data.data }));
       })
       .catch((error) => {
@@ -164,7 +161,6 @@ export const FetchAllUsers = () => {
         }
       )
       .then((response) => {
-        console.log(response);
         dispatch(slice.actions.updateAllUsers({ users: response.data.data }));
       })
       .catch((err) => {
@@ -183,7 +179,6 @@ export const FetchFriends = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         dispatch(slice.actions.updateFriends({ friends: response.data.data }));
       })
       .catch((error) => {
@@ -202,7 +197,6 @@ export const FetchFriendRequests = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         dispatch(
           slice.actions.updateFriendRequests({
             friendRequests: response.data.data,
@@ -215,9 +209,21 @@ export const FetchFriendRequests = () => {
   };
 };
 
-export const SelectConversation = ({ room_id }) => {
-  return (dispatch, getState) => {
-    dispatch(slice.actions.selectConversation({ room_id }));
+export const FetchSentRequests = () => {
+  return async (dispatch, getState) => {
+    await axios
+      .get("/user/get-sent-requests", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getState().auth.token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(slice.actions.updateSentRequests({ sentRequests: response.data.data }));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 };
 

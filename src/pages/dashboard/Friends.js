@@ -9,23 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { Plus } from "phosphor-react";
 import { ChatList } from "../../data";
 import ChatElement from "../../components/ChatElement";
-import Conversation from "../../components/Conversation";
-import {
-  Search,
-  SearchIconWrapper,
-  StyledInputBase,
-} from "../../components/Search";
 import CreateGroup from "../../sections/dashboard/CreateGroup";
+import Explore from "../../sections/dashboard/Explore";
 import "../../global.css";
-import NoChat from "./NoChat";
 
-const Group = () => {
+const Friends = () => {
   const theme = useTheme();
-
-  const { sidebar, chat_type, room_id } = useSelector((store) => store.app);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -39,7 +31,6 @@ const Group = () => {
         {/* Left */}
         <Box
           sx={{
-            // overflowY: "scroll",
             height: "100vh",
             width: 320,
             backgroundColor: (theme) =>
@@ -56,20 +47,7 @@ const Group = () => {
               justifyContent="space-between"
               direction="row"
             >
-              <Typography variant="h5">Groups</Typography>
-            </Stack>
-            
-            {/* Search */}
-            <Stack sx={{ width: "100%" }}>
-              <Search>
-                <SearchIconWrapper>
-                  <MagnifyingGlass color="#709CE6" />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search.."
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </Search>
+              <Typography variant="h5">Explore Users</Typography>
             </Stack>
 
             {/* Create New Group */}
@@ -127,22 +105,7 @@ const Group = () => {
         </Box>
 
         {/* Right */}
-        <Box
-          sx={{
-            height: "100%",
-            width: sidebar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
-            backgroundColor:
-              theme.palette.mode === "light"
-                ? "#F0F4FA"
-                : theme.palette.background.paper,
-          }}
-        >
-          {room_id !== null && chat_type === "individual" ? (
-            <Conversation />
-          ) : (
-            <NoChat />
-          )}
-        </Box>
+        <Explore />
       </Stack>
       {openDialog && (
         <CreateGroup open={openDialog} handleClose={handleCloseDialog} />
@@ -151,4 +114,4 @@ const Group = () => {
   );
 };
 
-export default Group;
+export default Friends;

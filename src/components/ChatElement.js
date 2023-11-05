@@ -1,38 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { styled, useTheme, alpha } from "@mui/material/styles";
 import StyledBadge from "./StyledBadge";
-import { faker } from "@faker-js/faker";
-import { useDispatch } from "react-redux";
-import { SelectConversation } from "../redux/slices/app";
+import { useDispatch, useSelector } from "react-redux";
+import { SelectConversation, SetCurrentConversation } from "../redux/slices/conversation";
+
+const truncateText = (string, n) => {
+  return string?.length > n ? `${string?.slice(0, n)}...` : string;
+};
+
+const StyledChatBox = styled(Box)(({ theme }) => ({
+  "&:hover": {
+    cursor: "pointer",
+  },
+}));
 
 const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
-  //   const dispatch = useDispatch();
-  //   const {room_id} = useSelector((state) => state.app);
-  //   const selectedChatId = room_id?.toString();
+  const dispatch = useDispatch();
+  const { conversations } = useSelector((state) => state.conversation.chat);
+  const { room_id } = useSelector((state) => state.conversation);
+  const selectedChatId = room_id?.toString();
 
-  //   let isSelected = +selectedChatId === id;
+  let isSelected = +selectedChatId === id;
 
-  //   if (!selectedChatId) {
-  //     isSelected = false;
-  //   }
+  if (!selectedChatId) {
+    isSelected = false;
+  }
+
+  // useEffect(() => {
+  //   const current = conversations.find((el) => el?.id === room_id);
+
+  //   console.log("Current", current);
+
+  //   dispatch(SetCurrentConversation(current));
+  // }, []);
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
-
   return (
-    <Box
+    <StyledChatBox
       onClick={() => {
         dispatch(SelectConversation({ room_id: id }));
       }}
       sx={{
         width: "100%",
+
         borderRadius: 1,
-        backgroundColor:
-          theme.palette.mode === "light"
-            ? "#fff"
-            : theme.palette.background.paper,
+
+        backgroundColor: isSelected
+          ? theme.palette.mode === "light"
+            ? alpha(theme.palette.primary.main, 0.5)
+            : theme.palette.primary.main
+          : theme.palette.mode === "light"
+          ? "#fff"
+          : theme.palette.background.paper,
       }}
       p={2}
     >
@@ -42,31 +63,35 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={2}>
+          {" "}
           {online ? (
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar src={faker.image.avatar()} />
+              <Avatar alt={name} src={img} />
             </StyledBadge>
           ) : (
-            <Avatar src={faker.image.avatar()} />
+            <Avatar alt={name} src={img} />
           )}
-
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
-            <Typography variant="caption">{msg}</Typography>
+            <Typography variant="caption">{truncateText(msg, 20)}</Typography>
           </Stack>
         </Stack>
-        <Stack spacing={2} alignItems="center">
+        <Stack spacing={2} alignItems={"center"}>
           <Typography sx={{ fontWeight: 600 }} variant="caption">
             {time}
           </Typography>
-          <Badge color="primary" badgeContent={unread} />
+          <Badge
+            className="unread-count"
+            color="primary"
+            badgeContent={unread}
+          />
         </Stack>
       </Stack>
-    </Box>
+    </StyledChatBox>
   );
 };
 

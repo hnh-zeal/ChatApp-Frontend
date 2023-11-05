@@ -18,13 +18,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const UsersList = () => {
   const dispatch = useDispatch();
-  
+
   const { users } = useSelector((state) => state.app);
-  
+
   useEffect(() => {
     dispatch(FetchUsers());
   }, [dispatch]);
-
 
   return (
     <>

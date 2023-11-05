@@ -115,7 +115,7 @@ const ChatInput = ({
                 </Tooltip>
               ))}
             </Stack>
-            <InputAdornment position="end" >
+            <InputAdornment position="end">
               <IconButton
                 onClick={() => {
                   setOpenActions(!openActions);
@@ -166,10 +166,10 @@ const Footer = () => {
 
   // const user_id = window.localStorage.getItem("user_id");
   const { user_id } = useSelector((state) => state.auth);
+  const { room_id } = useSelector((state) => state.conversation);
+  const { sideBar } = useSelector((state) => state.app);
 
   const isMobile = useResponsive("between", "md", "xs", "sm");
-
-  const { sideBar, room_id } = useSelector((state) => state.app);
 
   const [openPicker, setOpenPicker] = React.useState(false);
 
@@ -222,7 +222,11 @@ const Footer = () => {
     <Box
       sx={{
         position: "relative",
-        backgroundColor: "transparent !important",
+
+        backgroundColor:
+          theme.palette.mode === "light" ? "#F8FAFF" : theme.palette.background,
+        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        // backgroundColor: "transparent !important",
       }}
     >
       <Box

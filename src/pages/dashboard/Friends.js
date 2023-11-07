@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Plus } from "phosphor-react";
-import { ChatList } from "../../data";
+// import { ChatList } from "../../data";
 import ChatElement from "../../components/ChatElement";
 import CreateGroup from "../../sections/dashboard/CreateGroup";
 import Explore from "../../sections/dashboard/Explore";
@@ -18,6 +18,8 @@ import "../../global.css";
 
 const Friends = () => {
   const theme = useTheme();
+
+  const { conversations } = useSelector((state) => state.conversation.chat);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -87,15 +89,15 @@ const Friends = () => {
                   </Typography>
 
                   {/* Chat List */}
-                  {ChatList.filter((el) => el.pinned).map((el) => {
-                    return <ChatElement {...el} />;
+                  {conversations.filter((el) => el.pinned).map((el, index) => {
+                    return <ChatElement {...el} key={index}/>;
                   })}
 
                   <Typography variant="subtitle2" sx={{ color: "#676667" }}>
                     All Groups
                   </Typography>
-                  {ChatList.filter((el) => !el.pinned).map((el) => {
-                    return <ChatElement {...el} />;
+                  {conversations.filter((el) => !el.pinned).map((el, index) => {
+                    return <ChatElement {...el} key={index}/>;
                   })}
                 </Stack>
               </Stack>

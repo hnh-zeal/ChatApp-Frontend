@@ -32,17 +32,26 @@ const user_id = window.localStorage.getItem("user_id");
 const Chats = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  
+
+  const { user } = useSelector((state) => state.app);
+  // useEffect(() => {
+    // socket.emit("get_conversations", { user_id }, (data) => {
+    //   dispatch(FetchConversations({ conversations: data }));
+    // });
+  //   // might add later
+  // }, [dispatch]);
+
+  // if (user) {
+  //   const all_conversations = user.conversations;
+  //   if (all_conversations) {
+  //     dispatch(FetchConversations({ conversations: all_conversations }));
+  //   }
+  // }
+
   const { conversations } = useSelector((state) => state.conversation.chat);
-  
-  useEffect(() => {
-    socket.emit("get_conversations", { user_id }, (data) => {
-      dispatch(FetchConversations({ conversations: data }));
-    });
-  }, [dispatch, conversations]);
-  
+
   const [openDialog, setOpenDialog] = useState(false);
-  
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -126,9 +135,11 @@ const Chats = () => {
                 <Typography variant="subtitle2" sx={{ color: "#676767" }}>
                   All Chats
                 </Typography>
-                {conversations.filter((el) => !el.pinned).map((el) => {
-                  return <ChatElement {...el} />;
-                })}
+                {conversations
+                  .filter((el) => !el.pinned)
+                  .map((el, index) => {
+                    return <ChatElement {...el} key={index}/>;
+                  })}
               </Stack>
             </Stack>
             {/* </SimpleBarStyle> */}

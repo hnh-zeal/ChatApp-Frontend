@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import axios from "../../utils/axios";
 import { showSnackbar } from "./app";
-import { ResetInitialStates } from "./conversation";
 
 const initialState = {
   isLoggedIn: false,
@@ -25,11 +24,6 @@ const slice = createSlice({
     logIn(state, action) {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.token = action.payload.token;
-      state.user_id = action.payload.user_id;
-    },
-    signOut(state, action) {
-      state.isLoggedIn = false;
-      state.token = "";
       state.user_id = action.payload.user_id;
     },
     updateRegisterEmail(state, action) {
@@ -92,20 +86,8 @@ export function LoginUser(formValues) {
 
 export function LogoutUser() {
   return async (dispatch, getState) => {
-    dispatch(
-      slice.actions.signOut({
-        isLoggedIn: false,
-        token: "",
-        isLoading: false,
-        user: null,
-        user_id: null,
-        email: "",
-        error: false,
-      })
-    );
+    dispatch({ type: 'LOGOUT' });
     window.localStorage.removeItem("user_id");
-    console.log("Logging Out");
-    dispatch(ResetInitialStates());
   };
 }
 

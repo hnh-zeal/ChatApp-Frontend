@@ -5,6 +5,7 @@ import axios from "../../utils/axios";
 import { v4 } from "uuid";
 import S3 from "../../utils/s3";
 import { S3_BUCKET_NAME } from "../../config";
+import { FetchConversations } from "./conversation";
 
 const initialState = {
   user: {},
@@ -77,6 +78,10 @@ const slice = createSlice({
     },
     updateSentRequests(state, action) {
       state.sentRequests = action.payload.sentRequests;
+    },
+
+    searchUsers(state, action) {
+      state.searchResults = action.payload.results;
     },
   },
 });
@@ -219,7 +224,9 @@ export const FetchSentRequests = () => {
         },
       })
       .then((response) => {
-        dispatch(slice.actions.updateSentRequests({ sentRequests: response.data.data }));
+        dispatch(
+          slice.actions.updateSentRequests({ sentRequests: response.data.data })
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -258,7 +265,12 @@ export function FetchUserProfile() {
         },
       })
       .then((response) => {
-        dispatch(slice.actions.fetchUser({ user: response.data.data }));
+        dispatch(
+          FetchConversations({
+            conversations: response.data.data.conversations,
+          })
+        );
+        dispatch(slice.actions.fetchUser({ user: response.data.data.user }));
       })
       .catch((err) => {
         console.log(err);
@@ -292,7 +304,7 @@ export const UpdateUserProfile = (formValues) => {
 
     axios
       .patch(
-        "/user/updateProfile",
+        "/user/update-profile",
         { ...formValues, avatar: key },
         {
           headers: {

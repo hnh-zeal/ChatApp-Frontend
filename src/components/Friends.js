@@ -38,10 +38,10 @@ const UserElement = ({ img, firstName, lastName, online, _id }) => {
     });
   };
 
-  useEffect(() => {
-    // Dispatch the FetchUsers action
-    dispatch(FetchUsers());
-  }, [sendRequest]);
+  // useEffect(() => {
+  //   // Dispatch the FetchUsers action
+  //   dispatch(FetchUsers());
+  // }, [sendRequest]);
 
   const theme = useTheme();
 

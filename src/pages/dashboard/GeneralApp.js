@@ -34,11 +34,11 @@ const GeneralApp = () => {
         (() => {
           switch (sideBar.type) {
             case "CONTACT":
-              return <Contact />;
+              return <Contact key="0" />;
             case "STARRED":
-              return <StarredMessages />;
+              return <StarredMessages key="1"/>;
             case "SHARED":
-              return <SharedMessages />;
+              return <SharedMessages key="2"/>;
             default:
               break;
           }

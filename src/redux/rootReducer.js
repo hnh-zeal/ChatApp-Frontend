@@ -17,12 +17,21 @@ const rootPersistConfig = {
   //   blacklist: [],
 };
 
-const rootReducer = combineReducers({
+const allReducers = combineReducers({
   app: appReducer,
   auth: authReducer,
   conversation: conversationReducer,
   audioCall: audioCallReducer,
   videoCall: videoCallReducer,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'LOGOUT') {
+    state = undefined; // Reset the entire state to its initial values
+  }
+  return allReducers(state, action);
+};
+
+export default rootReducer;
 
 export { rootPersistConfig, rootReducer };

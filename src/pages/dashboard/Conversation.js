@@ -13,7 +13,7 @@ import {
   Timeline,
 } from "../../components/Conversation/MsgTypes";
 import { useDispatch, useSelector } from "react-redux";
-import conversation, {
+import {
   FetchCurrentMessages,
   SetCurrentConversation,
 } from "../../redux/slices/conversation";
@@ -38,7 +38,7 @@ const Conversation = ({ isMobile, menu }) => {
     console.log("Current", current);
 
     dispatch(SetCurrentConversation(current));
-  }, []);
+  }, [conversations, dispatch, room_id]);
 
   return (
     <Box p={isMobile ? 1 : 3}>
@@ -99,7 +99,9 @@ const ChatComponent = () => {
   const messageListRef = useRef(null);
   const { sideBar } = useSelector((store) => store.app);
 
-  const { current_messages, current_conversation } = useSelector((state) => state.conversation.chat);
+  const { current_messages, current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
 
   useEffect(() => {
     // Scroll to the bottom of the message list when new messages are added
@@ -119,7 +121,7 @@ const ChatComponent = () => {
         width={isMobile ? "100vw" : "auto"}
       >
         {/* Header */}
-        <ChatHeader {...current_conversation}/>
+        <ChatHeader {...current_conversation} />
         <Box
           ref={messageListRef}
           width={"100%"}

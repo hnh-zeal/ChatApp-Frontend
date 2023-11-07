@@ -112,20 +112,23 @@ const ChatHeader = ({
           direction="row"
         >
           <Box>
-            <StyledBadge
-              overlap="circular"
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              variant="dot"
-            >
+            {online ? (
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+              >
+                <Avatar alt={name} src={img} />
+              </StyledBadge>
+            ) : (
               <Avatar alt={name} src={img} />
-            </StyledBadge>
+            )}  
           </Box>
           <Stack spacing={0.2}>
             <Typography variant="subtitle2">{name}</Typography>
-            <Typography variant="caption">{online ? "Online" : "Offline"} </Typography>
+            <Typography variant="caption">
+              {online ? "Online" : "Offline"}{" "}
+            </Typography>
           </Stack>
         </Stack>
         <Stack direction={"row"} alignItems="center" spacing={isMobile ? 1 : 3}>

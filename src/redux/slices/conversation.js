@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { createSlice } from "@reduxjs/toolkit";
+import { socket } from "../../socket";
 
 const user_id = window.localStorage.getItem("user_id");
 
@@ -9,7 +10,11 @@ const initialState = {
     current_conversation: null,
     current_messages: [],
   },
-  group_chat: {},
+  group_chat: {
+    conversations: [],
+    current_conversation: null,
+    current_messages: [],
+  },
   chat_type: null,
   room_id: null,
 };
@@ -23,6 +28,7 @@ const slice = createSlice({
         const user = el.participants.find(
           (elm) => elm._id.toString() !== user_id
         );
+        var last_msg = el.messages.length > 0 ? el.messages.slice(-1)[0].text : "";
 
         return {
           id: el._id,
@@ -31,11 +37,11 @@ const slice = createSlice({
           online: user?.status === "Online",
           // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
           img: user?.avatar,
-          msg: el.messages.slice(-1)[0].text,
+          msg: last_msg,
           time: "9:36",
           unread: 0,
           pinned: false,
-          about: user?.about,
+          about: user?.about || "",
         };
       });
 
@@ -86,12 +92,7 @@ const slice = createSlice({
       });
     },
     setCurrentConversation(state, action) {
-      console.log(action.payload);
       state.chat.current_conversation = action.payload;
-    },
-    selectConversation(state, action) {
-      state.chat_type = "individual";
-      state.room_id = action.payload.room_id;
     },
     fetchCurrentMessages(state, action) {
       const messages = action.payload.messages;
@@ -105,19 +106,16 @@ const slice = createSlice({
       }));
       state.chat.current_messages = formatted_messages;
     },
+    selectConversation(state, action) {
+      const conversations = state.chat.conversations;
+      state.chat_type = "individual";
+      state.room_id = action.payload.room_id;
+      state.chat.current_conversation = conversations.find(
+        (elm) => elm.id.toString() === action.payload.room_id
+      );
+    },
     addDirectMessage(state, action) {
       state.chat.current_messages.push(action.payload.message);
-    },
-
-    resetInitialState(state, action) {
-      state.chat = {
-        conversations: [],
-        current_conversation: null,
-        current_messages: [],
-      };
-      state.group_chat = {};
-      state.chat_type = null;
-      state.room_id = null;
     },
   },
 });
@@ -153,6 +151,10 @@ export const SetCurrentConversation = (current_conversation) => {
 export const SelectConversation = ({ room_id }) => {
   return (dispatch, getState) => {
     dispatch(slice.actions.selectConversation({ room_id }));
+    socket.emit("get_messages", { conversation_id: room_id }, (data) => {
+      // data => list of messages
+      dispatch(slice.actions.fetchCurrentMessages({ messages: data }));
+    });
   };
 };
 
@@ -166,11 +168,5 @@ export const FetchCurrentMessages = ({ messages }) => {
 export const AddDirectMessage = (message) => {
   return async (dispatch, getState) => {
     dispatch(slice.actions.addDirectMessage({ message }));
-  };
-};
-
-export const ResetInitialStates = () => {
-  return async (dispatch, getState) => {
-    dispatch(slice.actions.resetInitialState());
   };
 };

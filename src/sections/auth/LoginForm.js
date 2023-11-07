@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
 import { LoginUser } from "../../redux/slices/auth";
+import { FetchUserProfile } from "../../redux/slices/app";
+import { FetchConversations } from "../../redux/slices/conversation";
 
 // import { useDispatch, useSelector } from "react-redux";
 
@@ -31,14 +33,14 @@ const LoginForm = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  // const defaultValues = {
-  //   email: "demo@talkspire.com",
-  //   password: "demo1234",
-  // };
+  const defaultValues = {
+    email: "",
+    password: "",
+  };
 
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
-    // defaultValues,
+    defaultValues,
   });
 
   const {
@@ -108,7 +110,7 @@ const LoginForm = () => {
         size="large"
         type="submit"
         variant="contained"
-        loading={isLoading}
+        loading={isLoading? "true" : "false"}
         sx={{
           bgcolor: "text.primary",
           color: (theme) =>

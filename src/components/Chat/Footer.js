@@ -108,6 +108,7 @@ const ChatInput = ({
                       top: -el.y,
                       backgroundColor: el.color,
                     }}
+                    key={el.key}
                     aria-label="add"
                   >
                     {el.icon}

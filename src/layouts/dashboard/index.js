@@ -30,21 +30,16 @@ const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
   const dispatch = useDispatch();
 
-  const { user_id } = useSelector((state) => state.auth);
+  const { isLoggedIn, user_id } = useSelector((state) => state.auth);
+  const { conversations, current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
   );
   const { open_video_notification_dialog, open_video_dialog } = useSelector(
     (state) => state.videoCall
   );
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const { conversations, current_conversation } = useSelector(
-    (state) => state.conversation.chat
-  );
-
-  useEffect(() => {
-    dispatch(FetchUserProfile());
-  }, []);
 
   const handleCloseAudioDialog = () => {
     dispatch(UpdateAudioCallDialog({ state: false }));
@@ -52,6 +47,14 @@ const DashboardLayout = () => {
   const handleCloseVideoDialog = () => {
     dispatch(UpdateVideoCallDialog({ state: false }));
   };
+
+  if (!socket) {
+    connectSocket(user_id);
+  }
+
+  useEffect(() => {
+    dispatch(FetchUserProfile());
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -145,7 +148,7 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     };
-  }, [[isLoggedIn, socket, user_id, dispatch]]);
+  }, [isLoggedIn, socket]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;

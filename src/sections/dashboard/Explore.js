@@ -141,12 +141,44 @@ const SentList = () => {
 
 const Explore = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [value, setValue] = useState(0);
+  // const [loading, setLoading] = useState(false);
+
+  const { users, friends, friendRequests, sentRequests } = useSelector(
+    (state) => state.app
+  );
 
   const { sideBar } = useSelector((store) => store.app);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleSearch = (query, value) => {
+    // if (query) {
+    //   setLoading(true);
+    //   switch (value) {
+    //     case 0:
+    //       break;
+
+    //     case 1:
+    //       break;
+
+    //     case 2:
+    //       break;
+
+    //     case 3:
+    //       break;
+
+    //     default:
+    //       break;
+    //   }
+    //   setLoading(false);
+    // } else {
+    // }
   };
 
   return (
@@ -192,6 +224,8 @@ const Explore = () => {
                 <StyledInputBase
                   placeholder="Search.."
                   inputProps={{ "aria-label": "search" }}
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value, value)}
                 />
               </Search>
             </Stack>

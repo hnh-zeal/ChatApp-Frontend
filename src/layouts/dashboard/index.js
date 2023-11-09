@@ -4,9 +4,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchUserProfile, showSnackbar } from "../../redux/slices/app";
-import { SelectConversation } from "../../redux/slices/conversation";
-
-import { socket, connectSocket } from "../../socket";
+import {
+  FetchCurrentMessages,
+  SelectConversation,
+  SetCurrentConversation,
+} from "../../redux/slices/conversation";
 import {
   UpdateConversation,
   AddConversation,
@@ -25,15 +27,15 @@ import {
   UpdateVideoCallDialog,
 } from "../../redux/slices/videoCall";
 import SideBar from "./SideBar";
+import { connectSocket, socket } from "../../socket";
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
   const dispatch = useDispatch();
 
   const { isLoggedIn, user_id } = useSelector((state) => state.auth);
-  const { conversations, current_conversation } = useSelector(
-    (state) => state.conversation.chat
-  );
+  const app = useSelector((state) => state.app);
+
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
   );
@@ -48,24 +50,25 @@ const DashboardLayout = () => {
     dispatch(UpdateVideoCallDialog({ state: false }));
   };
 
-  if (!socket) {
-    connectSocket(user_id);
-  }
-
   useEffect(() => {
     dispatch(FetchUserProfile());
-  }, []);
+  }, [dispatch]);
+
+  const { conversations, current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
 
   useEffect(() => {
     if (isLoggedIn) {
       // window.onload = function () {
       //   if (!window.location.hash) {
       //     window.location = window.location + "#loaded";
-      //     window.location.reload();
+          // window.location.reload();
       //   }
       // };
 
       // window.onload();
+
 
       if (!socket) {
         connectSocket(user_id);
@@ -83,9 +86,14 @@ const DashboardLayout = () => {
 
       socket.on("new_message", (data) => {
         const message = data.message;
-        console.log(current_conversation, data);
+        // check if the conversations is in the user's conversations?
+        if(!(conversations.some((el) => el?.id === data.conversation._id))) {
+          // add direct conversation
+          // console.log("Add");
+          dispatch(AddConversation({ conversation: data.conversation }));
+        }
         // check if msg we got is from currently selected conversation
-        if (current_conversation?.id === data.conversation_id) {
+        if (current_conversation?.id === data.conversation._id) {
           dispatch(
             AddDirectMessage({
               id: message._id,
@@ -101,18 +109,19 @@ const DashboardLayout = () => {
 
       socket.on("open_chat", (data) => {
         // add / update to conversation list
-        console.log(conversations);
+        // console.log(data);
         const existing_conversation = conversations.find(
           (el) => el?.id === data._id
         );
         if (existing_conversation) {
           // update direct conversation
           dispatch(UpdateConversation({ conversation: data }));
+          dispatch(FetchCurrentMessages({ messages: data?.messages }));
+          dispatch(SelectConversation({ room_id: data._id }));
         } else {
-          // add direct conversation
-          dispatch(AddConversation({ conversation: data }));
+          // set current conversation
+          dispatch(SetCurrentConversation({ conversation: data }));
         }
-        dispatch(SelectConversation({ room_id: data._id }));
       });
 
       socket.on("new_friend_request", (data) => {
@@ -148,7 +157,7 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     };
-  }, [isLoggedIn, socket]);
+  }, [isLoggedIn, dispatch, conversations, current_conversation, user_id]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;

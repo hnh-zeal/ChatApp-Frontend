@@ -158,27 +158,29 @@ const Explore = () => {
   };
 
   const handleSearch = (query, value) => {
-    // if (query) {
-    //   setLoading(true);
-    //   switch (value) {
-    //     case 0:
-    //       break;
+    if (query) {
+      console.log(query, value);
+      // setLoading(true);
+      switch (value) {
+        case 0:
 
-    //     case 1:
-    //       break;
+          break;
 
-    //     case 2:
-    //       break;
+        case 1:
+          break;
 
-    //     case 3:
-    //       break;
+        case 2:
+          break;
 
-    //     default:
-    //       break;
-    //   }
-    //   setLoading(false);
-    // } else {
-    // }
+        case 3:
+          break;
+
+        default:
+          break;
+      }
+      // setLoading(false);
+    } else {
+    }
   };
 
   return (

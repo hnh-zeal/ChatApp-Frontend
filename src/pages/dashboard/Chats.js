@@ -23,30 +23,11 @@ import {
   User,
 } from "phosphor-react";
 import Friends from "../../sections/dashboard/Friends";
-import { socket } from "../../socket";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchConversations } from "../../redux/slices/conversation";
-
-const user_id = window.localStorage.getItem("user_id");
 
 const Chats = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-
-  const { user } = useSelector((state) => state.app);
-  // useEffect(() => {
-    // socket.emit("get_conversations", { user_id }, (data) => {
-    //   dispatch(FetchConversations({ conversations: data }));
-    // });
-  //   // might add later
-  // }, [dispatch]);
-
-  // if (user) {
-  //   const all_conversations = user.conversations;
-  //   if (all_conversations) {
-  //     dispatch(FetchConversations({ conversations: all_conversations }));
-  //   }
-  // }
 
   const { conversations } = useSelector((state) => state.conversation.chat);
 

@@ -15,30 +15,19 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchCurrentMessages,
-  SetCurrentConversation,
+  SelectConversation,
 } from "../../redux/slices/conversation";
-import { socket } from "../../socket";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
 
-  const { conversations, current_messages } = useSelector(
+  const { current_messages } = useSelector(
     (state) => state.conversation.chat
   );
-  const { room_id } = useSelector((state) => state.conversation);
 
   useEffect(() => {
-    const current = conversations.find((el) => el?.id === room_id);
-
-    socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
-      // data => list of messages
-      dispatch(FetchCurrentMessages({ messages: data }));
-    });
-
-    console.log("Current", current);
-
-    dispatch(SetCurrentConversation(current));
-  }, [conversations, dispatch, room_id]);
+    
+  }, [dispatch, current_messages]);
 
   return (
     <Box p={isMobile ? 1 : 3}>

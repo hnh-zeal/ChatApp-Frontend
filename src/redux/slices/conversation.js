@@ -1,8 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { createSlice } from "@reduxjs/toolkit";
-import { socket } from "../../socket";
-
-const user_id = window.localStorage.getItem("user_id");
 
 const initialState = {
   chat: {
@@ -24,12 +21,13 @@ const slice = createSlice({
   initialState,
   reducers: {
     fetchConversations(state, action) {
+      const user_id = window.localStorage.getItem("user_id");
       const list = action.payload.conversations.map((el) => {
         const user = el.participants.find(
           (elm) => elm._id.toString() !== user_id
         );
-        var last_msg = el.messages.length > 0 ? el.messages.slice(-1)[0].text : "";
-
+        var last_msg =
+          el.messages.length > 0 ? el.messages.slice(-1)[0].text : "";
         return {
           id: el._id,
           user_id: user?._id,
@@ -44,57 +42,39 @@ const slice = createSlice({
           about: user?.about || "",
         };
       });
-
       state.chat.conversations = list;
     },
     updateConversation(state, action) {
       const this_conversation = action.payload.conversation;
-      state.chat.conversations = state.chat.conversations.map((el) => {
-        if (el.id !== this_conversation._id) {
-          return el;
-        } else {
-          const user = this_conversation.participants.find(
-            (elm) => elm._id.toString() !== user_id
-          );
-          return {
-            id: this_conversation._id._id,
-            user_id: user?._id,
-            name: `${user?.firstName} ${user?.lastName}`,
-            online: user?.status === "Online",
-            img: user?.avatar,
-            msg: faker.music.songName(),
-            time: "9:36",
-            unread: 0,
-            pinned: false,
-          };
-        }
-      });
+      state.chat.current_conversation = state.chat.conversations.filter(
+        (el) => el?.id === this_conversation._id
+      );
     },
     addConversation(state, action) {
+      const user_id = window.localStorage.getItem("user_id");
       const this_conversation = action.payload.conversation;
-      console.log("This Converstation", this_conversation._id);
       const user = this_conversation.participants.find(
         (elm) => elm._id.toString() !== user_id
       );
-      state.chat.conversations = state.chat.conversations.filter(
-        (el) => el?.id !== this_conversation._id
-      );
+      var last_msg =
+        this_conversation.messages.length > 0
+          ? this_conversation.messages.slice(-1)[0].text
+          : "";
       state.chat.conversations.push({
         id: this_conversation._id,
         user_id: user?._id,
         name: `${user?.firstName} ${user?.lastName}`,
         online: user?.status === "Online",
         img: user?.avatar,
-        msg: this_conversation.msg || "",
+        msg: last_msg || "",
         time: "9:36",
         unread: 0,
         pinned: false,
       });
     },
-    setCurrentConversation(state, action) {
-      state.chat.current_conversation = action.payload;
-    },
     fetchCurrentMessages(state, action) {
+      const user_id = window.localStorage.getItem("user_id");
+
       const messages = action.payload.messages;
       const formatted_messages = messages.map((el) => ({
         id: el._id,
@@ -113,6 +93,33 @@ const slice = createSlice({
       state.chat.current_conversation = conversations.find(
         (elm) => elm.id.toString() === action.payload.room_id
       );
+    },
+    setCurrentConversation(state, action) {
+      // console.log("Action Payload", action.payload);
+      const user_id = window.localStorage.getItem("user_id");
+      const current = action.payload.conversation;
+      const user = current.participants.find(
+        (elm) => elm._id.toString() !== user_id
+      );
+      var last_msg =
+        current.messages.length > 0 ? current.messages.slice(-1)[0].text : "";
+
+      state.chat_type = "individual";
+      state.room_id = current._id;
+      state.chat.current_conversation = {
+        id: current._id,
+        user_id: user?._id,
+        name: `${user?.firstName} ${user?.lastName}`,
+        online: user?.status === "Online",
+        // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
+        img: user?.avatar,
+        msg: last_msg,
+        time: "9:36",
+        unread: 0,
+        pinned: false,
+        about: user?.about || "",
+      };
+      state.chat.current_messages = current.messages;
     },
     addDirectMessage(state, action) {
       state.chat.current_messages.push(action.payload.message);
@@ -137,30 +144,25 @@ export const UpdateConversation = ({ conversation }) => {
 
 export const AddConversation = ({ conversation }) => {
   return async (dispatch, getState) => {
-    console.log(conversation);
     dispatch(slice.actions.addConversation({ conversation }));
   };
 };
 
-export const SetCurrentConversation = (current_conversation) => {
-  return async (dispatch, getState) => {
-    dispatch(slice.actions.setCurrentConversation(current_conversation));
+export const SetCurrentConversation = ({ conversation }) => {
+  return (dispatch, getState) => {
+    dispatch(slice.actions.setCurrentConversation({ conversation }));
   };
 };
 
 export const SelectConversation = ({ room_id }) => {
   return (dispatch, getState) => {
     dispatch(slice.actions.selectConversation({ room_id }));
-    socket.emit("get_messages", { conversation_id: room_id }, (data) => {
-      // data => list of messages
-      dispatch(slice.actions.fetchCurrentMessages({ messages: data }));
-    });
   };
 };
 
 export const FetchCurrentMessages = ({ messages }) => {
   return async (dispatch, getState) => {
-    console.log(messages);
+    // console.log(messages);
     dispatch(slice.actions.fetchCurrentMessages({ messages }));
   };
 };

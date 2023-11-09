@@ -15,8 +15,6 @@ import {
 } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
 import { LoginUser } from "../../redux/slices/auth";
-import { FetchUserProfile } from "../../redux/slices/app";
-import { FetchConversations } from "../../redux/slices/conversation";
 
 // import { useDispatch, useSelector } from "react-redux";
 

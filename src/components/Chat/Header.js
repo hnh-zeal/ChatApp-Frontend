@@ -122,7 +122,7 @@ const ChatHeader = ({
               </StyledBadge>
             ) : (
               <Avatar alt={name} src={img} />
-            )}  
+            )}
           </Box>
           <Stack spacing={0.2}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -177,8 +177,8 @@ const ChatHeader = ({
           >
             <Box p={1}>
               <Stack spacing={1}>
-                {Conversation_Menu.map((el) => (
-                  <MenuItem onClick={handleCloseConversationMenu}>
+                {Conversation_Menu.map((el, index) => (
+                  <MenuItem onClick={handleCloseConversationMenu} key={index}>
                     <Stack
                       sx={{ minWidth: 100 }}
                       direction="row"

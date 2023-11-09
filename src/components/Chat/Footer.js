@@ -97,8 +97,8 @@ const ChatInput = ({
                 display: openActions ? "inline-block" : "none",
               }}
             >
-              {Actions.map((el) => (
-                <Tooltip placement="right" title={el.title}>
+              {Actions.map((el, index) => (
+                <Tooltip placement="right" key={index} title={el.title}>
                   <Fab
                     onClick={() => {
                       setOpenActions(!openActions);
@@ -108,7 +108,6 @@ const ChatInput = ({
                       top: -el.y,
                       backgroundColor: el.color,
                     }}
-                    key={el.key}
                     aria-label="add"
                   >
                     {el.icon}
@@ -161,14 +160,14 @@ function containsUrl(text) {
 const Footer = () => {
   const theme = useTheme();
 
-  const { current_conversation } = useSelector(
+  const { current_conversation, current_messages } = useSelector(
     (state) => state.conversation.chat
   );
 
   // const user_id = window.localStorage.getItem("user_id");
   const { user_id } = useSelector((state) => state.auth);
   const { room_id } = useSelector((state) => state.conversation);
-  const { sideBar } = useSelector((state) => state.app);
+  const { sideBar, socket } = useSelector((state) => state.app);
 
   const isMobile = useResponsive("between", "md", "xs", "sm");
 
@@ -177,7 +176,7 @@ const Footer = () => {
   const [value, setValue] = useState("");
   const inputRef = useRef(null);
 
-  function handleEmojiClick(emoji) {
+  const handleEmojiClick = (emoji) => {
     const input = inputRef.current;
 
     if (input) {
@@ -193,7 +192,7 @@ const Footer = () => {
       // Move the cursor to the end of the inserted emoji
       input.selectionStart = input.selectionEnd = selectionStart + 1;
     }
-  }
+  };
 
   const handleInputKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -208,22 +207,25 @@ const Footer = () => {
   };
 
   const emit_text_message = () => {
-    socket.emit("text_message", {
-      message: linkify(value),
-      conversation_id: room_id,
-      from: user_id,
-      to: current_conversation.user_id,
-      type: containsUrl(value) ? "Link" : "Text",
-    });
+    if (value.trim() === "") {
+      return; // Don't send empty messages
+    } else {
+      socket.emit("text_message", {
+        message: linkify(value),
+        conversation_id: room_id,
+        from: user_id,
+        to: current_conversation.user_id,
+        type: containsUrl(value) ? "Link" : "Text",
+      });
 
-    setValue(""); // Clear the input field or update state as needed
+      setValue(""); // Clear the input field or update state as needed
+    }
   };
 
   return (
     <Box
       sx={{
         position: "relative",
-
         backgroundColor:
           theme.palette.mode === "light" ? "#F8FAFF" : theme.palette.background,
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",

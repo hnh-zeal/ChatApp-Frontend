@@ -6,9 +6,11 @@ import { v4 } from "uuid";
 import S3 from "../../utils/s3";
 import { S3_BUCKET_NAME } from "../../config";
 import { FetchConversations } from "./conversation";
+import { socket, connectSocket } from "../../socket";
 
 const initialState = {
   user: {},
+  socket: {},
   sideBar: {
     open: false,
     type: "CONTACT", // can be CONTACT, STARRED, SHARED
@@ -35,7 +37,10 @@ const slice = createSlice({
       state.call_logs = action.payload.call_logs;
     },
     fetchUser(state, action) {
+      const user_id = window.localStorage.getItem("user_id");
+      connectSocket(user_id);
       state.user = action.payload.user;
+      state.socket = socket;
     },
     updateUser(state, action) {
       state.user = action.payload.user;
@@ -143,7 +148,7 @@ export const FetchUsers = () => {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         dispatch(slice.actions.updateUsers({ users: response.data.data }));
       })
       .catch((error) => {
@@ -270,7 +275,11 @@ export function FetchUserProfile() {
             conversations: response.data.data.conversations,
           })
         );
-        dispatch(slice.actions.fetchUser({ user: response.data.data.user }));
+        dispatch(
+          slice.actions.fetchUser({
+            user: response.data.data.user,
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -284,23 +293,24 @@ export const UpdateUserProfile = (formValues) => {
 
     const key = v4();
 
-    try {
-      // S3.getSignedUrl(
-      //   "putObject",
-      //   { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
-      //   async (_err, presignedURL) => {
-      //     await fetch(presignedURL, {
-      //       method: "PUT",
-      //       body: file,
-      //       headers: {
-      //         "Content-Type": file.type,
-      //       },
-      //     });
-      //   }
-      // );
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   S3.getSignedUrl(
+    //     "putObject",
+    //     { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
+    //     async (_err, presignedURL) => {
+    //       await fetch(presignedURL, {
+    //         method: "PUT",
+    //         body: file,
+    //         headers: {
+    //           "Content-Type": file.type,
+    //         },
+    //       });
+    //     }
+    //   );
+
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     axios
       .patch(
@@ -315,9 +325,21 @@ export const UpdateUserProfile = (formValues) => {
       )
       .then((response) => {
         dispatch(slice.actions.updateUser({ user: response.data.data }));
+        dispatch(
+          showSnackbar({
+            severity: "success",
+            message: "Profile Updated Successfully!",
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
+        dispatch(
+          showSnackbar({
+            severity: "error",
+            message: err.message,
+          })
+        );
       });
   };
 };

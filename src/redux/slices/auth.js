@@ -106,7 +106,7 @@ export function ForgotPassword(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
       })
       .catch((error) => {
         console.log(error);
@@ -129,7 +129,7 @@ export function NewPassword(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         dispatch(
           slice.actions.logIn({
             isLoggedIn: true,
@@ -159,7 +159,7 @@ export function RegisterUser(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         dispatch(
           slice.actions.updateRegisterEmail({ email: formValues.email })
         );

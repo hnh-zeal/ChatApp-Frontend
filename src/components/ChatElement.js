@@ -3,7 +3,7 @@ import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import StyledBadge from "./StyledBadge";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation, SetCurrentConversation } from "../redux/slices/conversation";
+import { FetchCurrentMessages, SelectConversation} from "../redux/slices/conversation";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -17,8 +17,9 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 
 const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
   const dispatch = useDispatch();
-  const { conversations } = useSelector((state) => state.conversation.chat);
+  const { socket } = useSelector((state) => state.app);
   const { room_id } = useSelector((state) => state.conversation);
+
   const selectedChatId = room_id?.toString();
 
   let isSelected = +selectedChatId === id;
@@ -27,19 +28,14 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
     isSelected = false;
   }
 
-  // useEffect(() => {
-  //   const current = conversations.find((el) => el?.id === room_id);
-
-  //   console.log("Current", current);
-
-  //   dispatch(SetCurrentConversation(current));
-  // }, []);
-
   const theme = useTheme();
 
   return (
     <StyledChatBox
       onClick={() => {
+        socket.emit("get_messages", { conversation_id: id }, (data) => {
+          dispatch(FetchCurrentMessages({ messages: data }));
+        });
         dispatch(SelectConversation({ room_id: id }));
       }}
       sx={{

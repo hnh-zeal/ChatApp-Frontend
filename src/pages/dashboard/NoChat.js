@@ -1,10 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Box, Stack, Typography } from "@mui/material";
 import NoChatSVG from "../../assets/Illustration/NoChat";
 import { useTheme } from "@mui/material/styles";
+import { UpdateTab } from "../../redux/slices/app";
+import { styled } from "@mui/material/styles";
 
 const NoChat = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -27,7 +33,18 @@ const NoChat = () => {
         <NoChatSVG />
         <Typography variant="subtitle2" sx={{ display: "inline" }}>
           Select a Conversation or{" "}
-          <span style={{ color: "blue" }}> Start a new one</span>
+          <span
+            onClick={() => {
+              // Go to the Friends Page
+              navigate("/friends");
+            }}
+            style={{
+              color: "blue",
+              cursor: "pointer", // Move the ":hover" style to inline style
+            }}
+          >
+            Start a new one
+          </span>
         </Typography>
       </Stack>
     </Box>

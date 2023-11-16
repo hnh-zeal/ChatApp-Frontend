@@ -23,8 +23,8 @@ import useResponsive from "../../hooks/useResponsive";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { socket } from "../../socket";
 import { useSelector } from "react-redux";
+import { socket } from "../../socket";
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -167,7 +167,7 @@ const Footer = () => {
   // const user_id = window.localStorage.getItem("user_id");
   const { user_id } = useSelector((state) => state.auth);
   const { room_id } = useSelector((state) => state.conversation);
-  const { sideBar, socket } = useSelector((state) => state.app);
+  const { sideBar } = useSelector((state) => state.app);
 
   const isMobile = useResponsive("between", "md", "xs", "sm");
 

@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import useResponsive from "../../hooks/useResponsive";
 import {
   Bell,
   CaretRight,
@@ -58,6 +59,19 @@ const BlockDialog = ({ open, handleClose }) => {
 };
 
 const DeleteDialog = ({ open, handleClose }) => {
+  // socket.emit("clear_messages", data, (message) => {
+  //   dispatch(
+  //    FetchConversations({ conversations: data })
+  //   )
+  // });
+  // dispatch(ClearCurrent());
+  // dispatch(
+  //   showSnackbar({
+  //     severity: "success",
+  //     message: `Cleared Messages Successfully!`,
+  //   })
+  // );
+
   return (
     <Dialog
       open={open}
@@ -65,8 +79,9 @@ const DeleteDialog = ({ open, handleClose }) => {
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
+      width="100"
     >
-      <DialogTitle>Delete this chat</DialogTitle>
+      <DialogTitle>Delete this Conversation?</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-slide-description">
           Are you sure you want to delete this chat?
@@ -80,7 +95,8 @@ const DeleteDialog = ({ open, handleClose }) => {
   );
 };
 
-const Contact = () => {
+const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
+  const isMobile = useResponsive("between", "md", "xs", "sm");
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -97,13 +113,17 @@ const Contact = () => {
 
   return (
     <Box sx={{ width: 320, height: "100vh" }}>
-      <Stack sx={{ height: "100%" }}>
+      <Stack
+        height={"100%"}
+        maxHeight={"100vh"}
+        width={isMobile ? "100vw" : "auto"}
+      >
         {/* Header */}
         <Box
           sx={{
             boxShadow: "0px 0px 2px rgba(0,0,0,0.25)",
             width: "100%",
-            height: 98,
+            height: "60",
             backgroundColor:
               theme.palette.mode === "light"
                 ? "#F8FAFF"
@@ -117,7 +137,7 @@ const Contact = () => {
             justifyContent="space-between"
             spacing={3}
           >
-            <Typography variant="subtitle2">Contact Info</Typography>
+            <Typography variant="h5">Contact Info</Typography>
             <IconButton
               onClick={() => {
                 dispatch(ToggleSidebar());
@@ -134,24 +154,24 @@ const Contact = () => {
             height: "100%",
             position: "relative",
             flexGrow: 1,
-            overflowY: "scroll",
           }}
+          className={"scrollbar"}
           p={3}
           spacing={3}
         >
           {/* Avatar, Name, Phone */}
           <Stack alignItems={"center"} direction="row" spacing={2}>
             <Avatar
-              src={faker.image.avatar()}
-              alt={faker.name.firstName}
+              src={avatar}
+              alt={firstName}
               sx={{ height: 64, width: 64 }}
             />
             <Stack spacing={0.5}>
               <Typography variant="article" fontWeight={600}>
-                {faker.name.fullName()}
+                {firstName} {lastName}
               </Typography>
               <Typography variant="article" fontWeight={500}>
-                {"+959 420888219"}
+                {email}
               </Typography>
             </Stack>
           </Stack>
@@ -180,8 +200,8 @@ const Contact = () => {
 
           {/* About */}
           <Stack spacing={0.5}>
-            <Typography variant="article">About</Typography>
-            <Typography variant="body2">Imagination</Typography>
+            <Typography variant="article">Bio</Typography>
+            <Typography variant="body2">{bio}</Typography>
           </Stack>
 
           <Divider />
@@ -297,3 +317,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
+export { BlockDialog, DeleteDialog };

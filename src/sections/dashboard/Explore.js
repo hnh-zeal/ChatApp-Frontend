@@ -13,6 +13,7 @@ import {
   FetchFriends,
   FetchSentRequests,
   FetchUsers,
+  UpdateTab,
 } from "../../redux/slices/app";
 import {
   UserElement,
@@ -24,7 +25,6 @@ import "../../global.css";
 
 const UsersList = () => {
   const dispatch = useDispatch();
-  const theme = useTheme();
 
   const { users } = useSelector((state) => state.app);
 
@@ -53,6 +53,7 @@ const UsersList = () => {
 
 const FriendsList = () => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(FetchFriends());
   }, []);
@@ -139,9 +140,52 @@ const SentList = () => {
   );
 };
 
+const SearchResult = ({ searchResults, value }) => {
+  // You can render the search results here
+  return (
+    <Stack p={2} spacing={2}>
+      <Stack
+        direction="column"
+        className={"scrollbar"}
+        sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}
+      >
+        <Stack spacing={2.4}>
+          <Stack spacing={2}>
+            {searchResults.map((el, index) => {
+              switch (value) {
+                case 0:
+                  return <UserElement key={index} {...el} />;
+                case 1:
+                  return <FriendElement key={index} {...el} />;
+                case 2:
+                  return (
+                    <FriendRequestElement
+                      key={index}
+                      {...el.sender}
+                      id={el._id}
+                    />
+                  );
+                case 3:
+                  return (
+                    <SentRequestElement
+                      key={index}
+                      {...el.recipient}
+                      id={el._id}
+                    />
+                  );
+                default:
+                  return <></>;
+              }
+            })}
+          </Stack>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};
+
 const Explore = () => {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [value, setValue] = useState(0);
@@ -154,32 +198,69 @@ const Explore = () => {
   const { sideBar } = useSelector((store) => store.app);
 
   const handleChange = (event, newValue) => {
+    setSearchResults([]);
+    setSearchQuery("");
     setValue(newValue);
   };
 
   const handleSearch = (query, value) => {
-    if (query) {
-      console.log(query, value);
-      // setLoading(true);
-      switch (value) {
-        case 0:
+    setSearchQuery(query);
+    // setLoading(true);
+    switch (value) {
+      case 0:
+        const filteredUsers = users.filter(
+          (user) => (user) =>
+            user.firstName.toLowerCase().includes(query.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filteredUsers);
+        break;
 
-          break;
+      case 1:
+        const filteredFriends = friends.filter(
+          (user) =>
+            user.firstName.toLowerCase().includes(query.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filteredFriends);
+        break;
 
-        case 1:
-          break;
+      case 2:
+        const filteredFriendRequests = friendRequests.filter(
+          (user) =>
+            user.firstName.toLowerCase().includes(query.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filteredFriendRequests);
+        break;
 
-        case 2:
-          break;
+      case 3:
+        const filteredSentRequests = sentRequests.filter(
+          (user) =>
+            user.firstName.toLowerCase().includes(query.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filteredSentRequests);
+        break;
 
-        case 3:
-          break;
+      default:
+        break;
+    }
+    // setLoading(false);
+  };
 
-        default:
-          break;
-      }
-      // setLoading(false);
-    } else {
+  const change_placeholder = (value) => {
+    switch (value) {
+      case 0:
+        return "Search Users...";
+      case 1:
+        return "Search Friends...";
+      case 2:
+        return "Search Friend Requests...";
+      case 3:
+        return "Search Sent Requests...";
+      default:
+        return "Search...";
     }
   };
 
@@ -224,7 +305,7 @@ const Explore = () => {
                   <MagnifyingGlass color="#709CE6" />
                 </SearchIconWrapper>
                 <StyledInputBase
-                  placeholder="Search.."
+                  placeholder={change_placeholder(value)}
                   inputProps={{ "aria-label": "search" }}
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value, value)}
@@ -249,10 +330,26 @@ const Explore = () => {
             }}
           >
             <Stack spacing={2.4}>
-              {value === 0 && <UsersList />}
-              {value === 1 && <FriendsList />}
-              {value === 2 && <FriendRequestsList />}
-              {value === 3 && <SentList />}
+              {searchResults.length !== 0 ? (
+                // Render search results
+                <SearchResult searchResults={searchResults} value={value} />
+              ) : (
+                // Render based on the value
+                (() => {
+                  switch (value) {
+                    case 0:
+                      return <UsersList />;
+                    case 1:
+                      return <FriendsList />;
+                    case 2:
+                      return <FriendRequestsList />;
+                    case 3:
+                      return <SentList />;
+                    default:
+                      return <></>;
+                  }
+                })()
+              )}
             </Stack>
           </Stack>
         </Box>

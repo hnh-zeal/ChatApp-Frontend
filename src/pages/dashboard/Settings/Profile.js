@@ -10,12 +10,12 @@ const Profile = () => {
 
   return (
     <>
-      <Stack direction="row" sx={{ width: "100%" }}>
+      <Stack direction="row" sx={{ width: "calc(100vw - 100px)" }}>
         {/* Left Pane */}
         <Box
           sx={{
             height: "100vh",
-            width: 320,
+            width: 350,
             backgroundColor: (theme) =>
               theme.palette.mode === "light"
                 ? "#F8FAFF"

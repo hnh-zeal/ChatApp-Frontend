@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
@@ -14,7 +14,7 @@ import {
   StyledInputBase,
 } from "../../components/Search";
 import ChatElement from "../../components/ChatElement";
-import { ChatList } from "../../data";
+// import { ChatList } from "../../data";
 import "../../global.css";
 import {
   ArchiveBox,
@@ -23,11 +23,10 @@ import {
   User,
 } from "phosphor-react";
 import Friends from "../../sections/dashboard/Friends";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Chats = () => {
   const theme = useTheme();
-  const dispatch = useDispatch();
 
   const { conversations } = useSelector((state) => state.conversation.chat);
 
@@ -47,7 +46,7 @@ const Chats = () => {
         sx={{
           height: "100%",
           position: "relative",
-          width: 320,
+          width: 350,
           backgroundColor:
             theme.palette.mode === "light"
               ? "#F8FAFF"

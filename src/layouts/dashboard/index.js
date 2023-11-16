@@ -5,8 +5,10 @@ import useResponsive from "../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchUserProfile, showSnackbar } from "../../redux/slices/app";
 import {
+  FetchConversations,
   FetchCurrentMessages,
   SelectConversation,
+  SetCurrentContact,
   SetCurrentConversation,
 } from "../../redux/slices/conversation";
 import {
@@ -34,7 +36,6 @@ const DashboardLayout = () => {
   const dispatch = useDispatch();
 
   const { isLoggedIn, user_id } = useSelector((state) => state.auth);
-  const app = useSelector((state) => state.app);
 
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
@@ -51,8 +52,9 @@ const DashboardLayout = () => {
   };
 
   useEffect(() => {
+    connectSocket(user_id);
     dispatch(FetchUserProfile());
-  }, [dispatch]);
+  }, [dispatch, user_id]);
 
   const { conversations, current_conversation } = useSelector(
     (state) => state.conversation.chat
@@ -63,7 +65,7 @@ const DashboardLayout = () => {
       // window.onload = function () {
       //   if (!window.location.hash) {
       //     window.location = window.location + "#loaded";
-          // window.location.reload();
+      // window.location.reload();
       //   }
       // };
 
@@ -85,14 +87,16 @@ const DashboardLayout = () => {
       });
 
       socket.on("new_message", (data) => {
-        const message = data.message;
-        // check if the conversations is in the user's conversations?
-        if(!(conversations.some((el) => el?.id === data.conversation._id))) {
-          // add direct conversation
-          // console.log("Add");
-          dispatch(AddConversation({ conversation: data.conversation }));
-        }
+        socket.emit("get_conversations", { user_id }, (conversation_data) => {
+          if (conversation_data.length === 0) {
+            dispatch(AddConversation({ conversation: data.conversation }));
+          } else {
+            dispatch(FetchConversations({ conversations: conversation_data }));
+          }
+        });
+
         // check if msg we got is from currently selected conversation
+        const message = data.message;
         if (current_conversation?.id === data.conversation._id) {
           dispatch(
             AddDirectMessage({
@@ -107,22 +111,17 @@ const DashboardLayout = () => {
         }
       });
 
-      socket.on("open_chat", (data) => {
-        // add / update to conversation list
-        // console.log(data);
-        const existing_conversation = conversations.find(
-          (el) => el?.id === data._id
+      socket.on("open_chat", ({ new_chat, contact }) => {
+        const existing_conversation = conversations.find((el) => el?.id === new_chat._id);
+        
+        dispatch(existing_conversation
+          ? SelectConversation({ room_id: new_chat._id })
+          : SetCurrentConversation({ conversation: new_chat })
         );
-        if (existing_conversation) {
-          // update direct conversation
-          dispatch(UpdateConversation({ conversation: data }));
-          dispatch(FetchCurrentMessages({ messages: data?.messages }));
-          dispatch(SelectConversation({ room_id: data._id }));
-        } else {
-          // set current conversation
-          dispatch(SetCurrentConversation({ conversation: data }));
-        }
-      });
+      
+        dispatch(FetchCurrentMessages({ messages: new_chat.messages }));
+        dispatch(SetCurrentContact({ contact }));
+      });      
 
       socket.on("new_friend_request", (data) => {
         console.log("Value", data);

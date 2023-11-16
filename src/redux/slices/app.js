@@ -3,14 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
 
 import { v4 } from "uuid";
-import S3 from "../../utils/s3";
-import { S3_BUCKET_NAME } from "../../config";
+// import S3 from "../../utils/s3";
+// import { S3_BUCKET_NAME } from "../../config";
 import { FetchConversations } from "./conversation";
 import { socket, connectSocket } from "../../socket";
 
 const initialState = {
   user: {},
-  socket: {},
+  // socket: {},
   sideBar: {
     open: false,
     type: "CONTACT", // can be CONTACT, STARRED, SHARED
@@ -37,17 +37,17 @@ const slice = createSlice({
       state.call_logs = action.payload.call_logs;
     },
     fetchUser(state, action) {
-      const user_id = window.localStorage.getItem("user_id");
-      connectSocket(user_id);
+      // const user_id = window.localStorage.getItem("user_id");
+      // connectSocket(user_id);
       state.user = action.payload.user;
-      state.socket = socket;
+      // state.socket = socket;
     },
     updateUser(state, action) {
       state.user = action.payload.user;
     },
 
     //Toggle SideBar
-    toggleSideBar(state) {
+    toggleSideBar(state, action) {
       state.sideBar.open = !state.sideBar.open;
     },
     updateSideBarType(state, action) {
@@ -96,9 +96,9 @@ export default slice.reducer;
 
 // ----------------------------------------------------------------------
 
-export function ToggleSidebar() {
+export const ToggleSidebar = () => {
   return async (dispatch, getState) => {
-    dispatch(slice.actions.toggleSidebar());
+    dispatch(slice.actions.toggleSideBar());
   };
 }
 
@@ -137,6 +137,8 @@ export const showSnackbar =
 export const closeSnackBar = () => async (dispatch, getState) => {
   dispatch(slice.actions.closeSnackBar());
 };
+
+
 
 export const FetchUsers = () => {
   return async (dispatch, getState) => {

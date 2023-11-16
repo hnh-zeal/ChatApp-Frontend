@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -14,6 +13,7 @@ const initialState = {
   },
   chat_type: null,
   room_id: null,
+  current_contact: null,
 };
 
 const slice = createSlice({
@@ -28,6 +28,19 @@ const slice = createSlice({
         );
         var last_msg =
           el.messages.length > 0 ? el.messages.slice(-1)[0].text : "";
+        var last_msg_time =
+          el.messages.length > 0 ? el.messages.slice(-1)[0].created_at : "";
+
+        // Format time as HH:mm
+        let last_msg_timestamp = "";
+        if (last_msg_time) {
+          const dateTime = new Date(last_msg_time);
+          last_msg_timestamp = dateTime.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        }
         return {
           id: el._id,
           user_id: user?._id,
@@ -36,7 +49,7 @@ const slice = createSlice({
           // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
           img: user?.avatar,
           msg: last_msg,
-          time: "9:36",
+          time: last_msg_timestamp,
           unread: 0,
           pinned: false,
           about: user?.about || "",
@@ -46,6 +59,10 @@ const slice = createSlice({
     },
     updateConversation(state, action) {
       const this_conversation = action.payload.conversation;
+      console.log(state.chat.conversations.filter(
+        (el) => el?.id === this_conversation._id
+      ) );
+
       state.chat.current_conversation = state.chat.conversations.filter(
         (el) => el?.id === this_conversation._id
       );
@@ -95,7 +112,6 @@ const slice = createSlice({
       );
     },
     setCurrentConversation(state, action) {
-      // console.log("Action Payload", action.payload);
       const user_id = window.localStorage.getItem("user_id");
       const current = action.payload.conversation;
       const user = current.participants.find(
@@ -121,8 +137,15 @@ const slice = createSlice({
       };
       state.chat.current_messages = current.messages;
     },
+    setCurrentContact(state, action) {
+      state.current_contact = action.payload.contact;
+    },
     addDirectMessage(state, action) {
       state.chat.current_messages.push(action.payload.message);
+    },
+    clearCurrent(state, action) {
+      state.chat.current_messages = [];
+      state.chat.current_conversation = null;
     },
   },
 });
@@ -137,7 +160,6 @@ export const FetchConversations = ({ conversations }) => {
 
 export const UpdateConversation = ({ conversation }) => {
   return async (dispatch, getState) => {
-    console.log("Conversation", conversation);
     dispatch(slice.actions.updateConversation({ conversation }));
   };
 };
@@ -167,8 +189,20 @@ export const FetchCurrentMessages = ({ messages }) => {
   };
 };
 
+export const SetCurrentContact = ({ contact }) => {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.setCurrentContact({ contact }));
+  };
+};
+
 export const AddDirectMessage = (message) => {
   return async (dispatch, getState) => {
     dispatch(slice.actions.addDirectMessage({ message }));
+  };
+};
+
+export const ClearCurrent = () => {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.clearCurrent());
   };
 };

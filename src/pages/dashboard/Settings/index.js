@@ -103,12 +103,12 @@ const Settings = () => {
 
   return (
     <>
-      <Stack direction="row" sx={{ width: "100%" }}>
+      <Stack direction="row" sx={{ width: "calc(100vw - 100px)" }}>
         {/* LeftPane */}
         <Box
           sx={{     
             height: "100vh",
-            width: 320,
+            width: 350,
             backgroundColor:
               theme.palette.mode === "light"
                 ? "#F8FAFF"

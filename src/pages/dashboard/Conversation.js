@@ -13,10 +13,6 @@ import {
   Timeline,
 } from "../../components/Conversation/MsgTypes";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  FetchCurrentMessages,
-  SelectConversation,
-} from "../../redux/slices/conversation";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
@@ -101,7 +97,7 @@ const ChatComponent = () => {
     <Box
       sx={{
         height: "100%",
-        width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
+        width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 450px)",
       }}
     >
       <Stack

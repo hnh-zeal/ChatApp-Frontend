@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Badge,
@@ -13,10 +13,22 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
-import { faker } from "@faker-js/faker";
+import {
+  DotsThreeVertical,
+  MagnifyingGlass,
+  Phone,
+  VideoCamera,
+} from "phosphor-react";
+import { socket } from "../../socket";
 import { useSearchParams } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  ClearCurrent,
+  FetchConversations,
+} from "../../redux/slices/conversation";
+import { ToggleSidebar, showSnackbar } from "../../redux/slices/app";
+import { DeleteDialog } from "../../sections/dashboard/Contact";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -58,33 +70,53 @@ const Conversation_Menu = [
     title: "Clear messages",
   },
   {
-    title: "Delete chat",
+    title: "Delete Conversation",
   },
 ];
 
-const ChatHeader = ({
-  id,
-  img,
-  msg,
-  name,
-  online,
-  pinned,
-  time,
-  unread,
-  user_id,
-}) => {
+const ChatHeader = ({ id, img, msg, name, online, pinned, time, unread }) => {
+  const dispatch = useDispatch();
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
+  const [conversationMenu, setConversationMenu] = useState(false);
 
-  const [conversationMenuAnchorEl, setConversationMenuAnchorEl] =
-    React.useState(null);
-  const openConversationMenu = Boolean(conversationMenuAnchorEl);
-  const handleClickConversationMenu = (event) => {
-    setConversationMenuAnchorEl(event.currentTarget);
+  const user_id = window.localStorage.getItem("user_id");
+  const { current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
+
+  const anchorEl = document.getElementById("conversation-positioned-button");
+
+  const handleClickConversationMenu = () => {
+    setConversationMenu((prevconversationMenu) => !prevconversationMenu);
   };
-  const handleCloseConversationMenu = () => {
-    setConversationMenuAnchorEl(null);
+
+  const handleConversationMenutem = (index) => {
+    const data = {
+      user_id: user_id,
+      conversation_id: current_conversation.id,
+    };
+    switch (index) {
+      case 0:
+        console.log("Contact Info");
+        break;
+      case 1:
+        console.log("Mute Notifications");
+        break;
+      case 2:
+        return <DeleteDialog />;
+      case 3:
+        socket.emit("delete_conversation", data, {
+          user_id: user_id,
+          conversation_id: current_conversation.id,
+        });
+        dispatch(ClearCurrent());
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
@@ -117,6 +149,10 @@ const ChatHeader = ({
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 variant="dot"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  dispatch(ToggleSidebar());
+                }}
               >
                 <Avatar alt={name} src={img} />
               </StyledBadge>
@@ -148,13 +184,13 @@ const ChatHeader = ({
           <IconButton
             id="conversation-positioned-button"
             aria-controls={
-              openConversationMenu ? "conversation-positioned-menu" : undefined
+              conversationMenu ? "conversation-positioned-menu" : undefined
             }
             aria-haspopup="true"
-            aria-expanded={openConversationMenu ? "true" : undefined}
+            aria-expanded={conversationMenu ? "true" : undefined}
             onClick={handleClickConversationMenu}
           >
-            <CaretDown />
+            <DotsThreeVertical />
           </IconButton>
           <Menu
             MenuListProps={{
@@ -163,9 +199,9 @@ const ChatHeader = ({
             TransitionComponent={Fade}
             id="conversation-positioned-menu"
             aria-labelledby="conversation-positioned-button"
-            anchorEl={conversationMenuAnchorEl}
-            open={openConversationMenu}
-            onClose={handleCloseConversationMenu}
+            anchorEl={anchorEl}
+            open={conversationMenu}
+            onClose={handleClickConversationMenu}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",
@@ -178,7 +214,10 @@ const ChatHeader = ({
             <Box p={1}>
               <Stack spacing={1}>
                 {Conversation_Menu.map((el, index) => (
-                  <MenuItem onClick={handleCloseConversationMenu} key={index}>
+                  <MenuItem
+                    onClick={() => handleConversationMenutem(index)}
+                    key={index}
+                  >
                     <Stack
                       sx={{ minWidth: 100 }}
                       direction="row"

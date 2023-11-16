@@ -1,9 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import StyledBadge from "./StyledBadge";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchCurrentMessages, SelectConversation} from "../redux/slices/conversation";
+import {
+  FetchCurrentMessages,
+  SelectConversation,
+  SetCurrentContact,
+} from "../redux/slices/conversation";
+import { socket } from "../socket";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -15,9 +20,8 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
+const ChatElement = ({ id, name, img, msg, time, unread, online, user_id }) => {
   const dispatch = useDispatch();
-  const { socket } = useSelector((state) => state.app);
   const { room_id } = useSelector((state) => state.conversation);
 
   const selectedChatId = room_id?.toString();
@@ -33,10 +37,15 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
   return (
     <StyledChatBox
       onClick={() => {
-        socket.emit("get_messages", { conversation_id: id }, (data) => {
-          dispatch(FetchCurrentMessages({ messages: data }));
-        });
-        dispatch(SelectConversation({ room_id: id }));
+        socket.emit(
+          "get_current_conversation",
+          { conversation_id: id, user_id: user_id },
+          (data) => {
+            dispatch(SelectConversation({ room_id: id }));
+            dispatch(FetchCurrentMessages({ messages: data.messages }));
+            dispatch(SetCurrentContact({ contact: data.contact }));
+          }
+        );
       }}
       sx={{
         width: "100%",
@@ -72,7 +81,9 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
             <Avatar alt={name} src={img} />
           )}
           <Stack spacing={0.3}>
-            <Typography variant="subtitle2">{name}</Typography>
+            <Typography variant="subtitle2">
+              {truncateText(name, 15)}
+            </Typography>
             <Typography variant="caption">{truncateText(msg, 20)}</Typography>
           </Stack>
         </Stack>

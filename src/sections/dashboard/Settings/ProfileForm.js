@@ -69,12 +69,11 @@ const ProfileForm = () => {
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
-      console.log(acceptedFiles);
       if (acceptedFiles.length >= 0) {
         const file = acceptedFiles[0];
         setFile(file);
 
-        console.log (typeof file);
+        // console.log (typeof file);
 
         if (file instanceof Blob || file instanceof File) {
           if (file.size <= maxSize) {

@@ -21,10 +21,11 @@ import {
 } from "phosphor-react";
 
 import { useTheme } from "@mui/material/styles";
-import { faker } from "@faker-js/faker";
+// import { faker } from "@faker-js/faker";
 import ThemeDialog from "../../../sections/dashboard/Settings/ThemeDialog";
 import ShortcutDialog from "../../../sections/dashboard/Settings/ShortcutDialog";
 import { useSelector } from "react-redux";
+import avatarUrl from "../../../utils/avatarURL";
 
 const Settings = () => {
   const theme = useTheme();
@@ -106,7 +107,7 @@ const Settings = () => {
       <Stack direction="row" sx={{ width: "calc(100vw - 100px)" }}>
         {/* LeftPane */}
         <Box
-          sx={{     
+          sx={{
             height: "100vh",
             width: 350,
             backgroundColor:
@@ -117,7 +118,6 @@ const Settings = () => {
             boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
           }}
         >
-          
           <Stack p={4} spacing={5}>
             {/* Header */}
             <Stack direction="row" alignItems={"center"} spacing={3}>
@@ -131,7 +131,7 @@ const Settings = () => {
             {/* Profile */}
             <Stack direction="row" spacing={3}>
               <Avatar
-                src={faker.image.avatar()}
+                src={avatarUrl(user?.avatar)}
                 sx={{ height: 56, width: 56 }}
               />
               <Stack spacing={0.5}>
@@ -143,19 +143,18 @@ const Settings = () => {
             <Stack spacing={4}>
               {list.map(({ key, icon, title, onclick }) => {
                 return (
-                  <>
-                    <Stack
-                      onClick={onclick}
-                      sx={{ cursor: "pointer" }}
-                      spacing={2}
-                    >
-                      <Stack alignItems={"center"} direction="row" spacing={2}>
-                        {icon}
-                        <Typography variant="body2">{title}</Typography>
-                      </Stack>
-                      {key !== 7 && <Divider />}
+                  <Stack
+                    key={key}
+                    onClick={onclick}
+                    sx={{ cursor: "pointer" }}
+                    spacing={2}
+                  >
+                    <Stack alignItems={"center"} direction="row" spacing={2}>
+                      {icon}
+                      <Typography variant="body2">{title}</Typography>
                     </Stack>
-                  </>
+                    {key !== 7 && <Divider />}
+                  </Stack>
                 );
               })}
             </Stack>
@@ -177,8 +176,12 @@ const Settings = () => {
       {openTheme && (
         <ThemeDialog open={openTheme} handleClose={handleCloseTheme} />
       )}
-      {openShortcuts && <ShortcutDialog open={openShortcuts} handleClose={handleCloseShortcuts} /> }
-      
+      {openShortcuts && (
+        <ShortcutDialog
+          open={openShortcuts}
+          handleClose={handleCloseShortcuts}
+        />
+      )}
     </>
   );
 };

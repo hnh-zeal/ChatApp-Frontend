@@ -1,9 +1,9 @@
-import { Stack, Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
-import { ChatHeader, ChatFooter } from "../../components/Chat";
+import { Stack, Box } from "@mui/material";
 import useResponsive from "../../hooks/useResponsive";
-// import { Chat_History } from "../../data";
+import { ChatHeader, ChatFooter } from "../../components/Chat";
 import {
   DocMsg,
   LinkMsg,
@@ -12,7 +12,6 @@ import {
   TextMsg,
   Timeline,
 } from "../../components/Conversation/MsgTypes";
-import { useDispatch, useSelector } from "react-redux";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
@@ -107,6 +106,7 @@ const ChatComponent = () => {
       >
         {/* Header */}
         <ChatHeader {...current_conversation} />
+        
         <Box
           ref={messageListRef}
           width={"100%"}

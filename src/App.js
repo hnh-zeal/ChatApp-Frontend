@@ -9,8 +9,6 @@ import ThemeSettings from "./components/settings";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { closeSnackBar } from "./redux/slices/app";
-// css
-import "./global.css";
 
 const vertical = "bottom";
 const horizontal = "center";

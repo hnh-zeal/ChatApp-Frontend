@@ -12,7 +12,6 @@ import {
   SetCurrentConversation,
 } from "../../redux/slices/conversation";
 import {
-  UpdateConversation,
   AddConversation,
   AddDirectMessage,
 } from "../../redux/slices/conversation";

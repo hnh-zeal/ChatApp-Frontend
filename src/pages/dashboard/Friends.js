@@ -14,7 +14,7 @@ import { Plus } from "phosphor-react";
 import ChatElement from "../../components/ChatElement";
 import CreateGroup from "../../sections/dashboard/CreateGroup";
 import Explore from "../../sections/dashboard/Explore";
-import "../../global.css";
+import "../../assets/css/scrollbar.css";
 
 const Friends = () => {
   const theme = useTheme();
@@ -81,7 +81,6 @@ const Friends = () => {
                 height: "100%",
               }}
             >
-              {/* <SimpleBarStyle timeout={500} clickOnTrack={false}> */}
               <Stack spacing={2.4}>
                 <Stack spacing={2}>
                   <Typography variant="subtitle2" sx={{ color: "#676667" }}>
@@ -101,7 +100,6 @@ const Friends = () => {
                   })}
                 </Stack>
               </Stack>
-              {/* </SimpleBarStyle> */}
             </Stack>
           </Stack>
         </Box>

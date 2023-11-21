@@ -1,6 +1,5 @@
 import { CircularProgress, Paper, Box, Typography } from "@mui/material";
 import React from "react";
-import "../global.css";
 
 const LoadingScreen = () => {
   return (

@@ -15,7 +15,6 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import "../../global.css";
 import { CallLogs } from "../../data";
 import StartCall from "../../sections/dashboard/StartCall";
 

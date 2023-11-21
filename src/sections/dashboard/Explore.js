@@ -13,7 +13,6 @@ import {
   FetchFriends,
   FetchSentRequests,
   FetchUsers,
-  UpdateTab,
 } from "../../redux/slices/app";
 import {
   UserElement,
@@ -21,7 +20,7 @@ import {
   FriendElement,
   SentRequestElement,
 } from "../../components/Friends";
-import "../../global.css";
+import "../../assets/css/scrollbar.css";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -56,7 +55,7 @@ const FriendsList = () => {
 
   useEffect(() => {
     dispatch(FetchFriends());
-  }, []);
+  }, [dispatch]);
 
   const { friends } = useSelector((state) => state.app);
   return (
@@ -268,7 +267,7 @@ const Explore = () => {
     <Box
       sx={{
         height: "100%",
-        width: sideBar.open ? "calc(100vw - 740px)" : "calc(100vw - 420px)",
+        width: "calc(100vw - 420px)",
       }}
     >
       <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
@@ -299,7 +298,7 @@ const Explore = () => {
               </Tabs>
             </Box>
             {/* Search */}
-            <Stack sx={{ width: "100%" }}>
+            <Stack sx={{ width: "100%" }} p={3}>
               <Search>
                 <SearchIconWrapper>
                   <MagnifyingGlass color="#709CE6" />
@@ -328,6 +327,7 @@ const Explore = () => {
             sx={{
               height: "100%",
             }}
+            className="scrollbar"
           >
             <Stack spacing={2.4}>
               {searchResults.length !== 0 ? (

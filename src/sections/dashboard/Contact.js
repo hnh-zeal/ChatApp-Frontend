@@ -14,22 +14,21 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 import useResponsive from "../../hooks/useResponsive";
 import {
   Bell,
   CaretRight,
-  Phone,
   Prohibit,
   Star,
   Trash,
-  VideoCamera,
   X,
 } from "phosphor-react";
 import { ToggleSidebar, UpdateSidebarType } from "../../redux/slices/app";
 import { useDispatch } from "react-redux";
 import { faker } from "@faker-js/faker";
 import AntSwtich from "../../components/AntSwitch";
+import avatarUrl from "../../utils/avatarURL";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -59,6 +58,8 @@ const BlockDialog = ({ open, handleClose }) => {
 };
 
 const DeleteDialog = ({ open, handleClose }) => {
+
+
   // socket.emit("clear_messages", data, (message) => {
   //   dispatch(
   //    FetchConversations({ conversations: data })
@@ -97,8 +98,6 @@ const DeleteDialog = ({ open, handleClose }) => {
 
 const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
   const isMobile = useResponsive("between", "md", "xs", "sm");
-  const theme = useTheme();
-
   const dispatch = useDispatch();
 
   const [openBlock, setOpenBlock] = useState(false);
@@ -112,57 +111,60 @@ const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
   };
 
   return (
-    <Box sx={{ width: 320, height: "100vh" }}>
+    <Box
+      sx={{
+        height: "100%",
+        width: 350,
+      }}
+    >
       <Stack
-        height={"100%"}
-        maxHeight={"100vh"}
-        width={isMobile ? "100vw" : "auto"}
+        direction="column"
+        sx={{
+          height: "100%",
+          width: 350,
+          backgroundColor: (theme) =>
+            theme.palette.mode === "light"
+              ? "#F8FAFF"
+              : theme.palette.background,
+          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        }}
       >
         {/* Header */}
-        <Box
-          sx={{
-            boxShadow: "0px 0px 2px rgba(0,0,0,0.25)",
-            width: "100%",
-            height: "60",
-            backgroundColor:
-              theme.palette.mode === "light"
-                ? "#F8FAFF"
-                : theme.palette.background,
-          }}
+        <Stack
+          direction="row"
+          width="100%"
+          sx={{ height: 75, p: 2 }}
+          alignItems={"center"}
+          justifyContent="space-between"
+          spacing={3}
         >
-          <Stack
-            direction="row"
-            sx={{ height: "100%", p: 2 }}
-            alignItems={"center"}
-            justifyContent="space-between"
-            spacing={3}
+          <Typography variant="h5">Contact Info</Typography>
+          <IconButton
+            onClick={() => {
+              dispatch(ToggleSidebar());
+            }}
           >
-            <Typography variant="h5">Contact Info</Typography>
-            <IconButton
-              onClick={() => {
-                dispatch(ToggleSidebar());
-              }}
-            >
-              <X />
-            </IconButton>
-          </Stack>
-        </Box>
+            <X />
+          </IconButton>
+        </Stack>
+
+        <Divider />
 
         {/* Body */}
         <Stack
+          className={"scrollbar"}
           sx={{
             height: "100%",
             position: "relative",
             flexGrow: 1,
           }}
-          className={"scrollbar"}
-          p={3}
+          p={isMobile ? 1 : 3}
           spacing={3}
         >
           {/* Avatar, Name, Phone */}
           <Stack alignItems={"center"} direction="row" spacing={2}>
             <Avatar
-              src={avatar}
+              src={avatarUrl(avatar)}
               alt={firstName}
               sx={{ height: 64, width: 64 }}
             />
@@ -173,26 +175,6 @@ const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
               <Typography variant="article" fontWeight={500}>
                 {email}
               </Typography>
-            </Stack>
-          </Stack>
-
-          {/* Audio and Phone Icons */}
-          <Stack
-            direction="row"
-            alignItems={"center"}
-            justifyContent="space-evenly"
-          >
-            <Stack spacing={1} alignItems={"center"}>
-              <IconButton>
-                <Phone />
-              </IconButton>
-              <Typography variant="overline">Voice</Typography>
-            </Stack>
-            <Stack spacing={1} alignItems={"center"}>
-              <IconButton>
-                <VideoCamera />
-              </IconButton>
-              <Typography variant="overline">Video</Typography>
             </Stack>
           </Stack>
 
@@ -224,9 +206,9 @@ const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
           </Stack>
 
           <Stack direction="row" spacing={2} alignItems={"center"}>
-            {[1, 2, 3].map((el) => (
+            {[1, 2, 3].map((el, index) => (
               <Box>
-                <img src={faker.image.food()} alt={faker.name.fullName()} />
+                <img src={faker.image.food()} key={index} alt={faker.name.fullName()} />
               </Box>
             ))}
           </Stack>
@@ -281,6 +263,8 @@ const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
             </Stack>
           </Stack>
 
+          <Divider />
+
           {/* Delete and Block */}
           <Stack direction="row" spacing={2} alignItems={"center"}>
             <Button
@@ -305,13 +289,17 @@ const Contact = ({ _id, email, firstName, lastName, bio, avatar }) => {
             </Button>
           </Stack>
         </Stack>
+
+        <Divider />
+
+        {/* Fotter */}
+        {openBlock && (
+          <BlockDialog open={openBlock} handleClose={handleCloseBlock} />
+        )}
+        {openDelete && (
+          <DeleteDialog open={openDelete} handleClose={handleCloseDelete} />
+        )}
       </Stack>
-      {openBlock && (
-        <BlockDialog open={openBlock} handleClose={handleCloseBlock} />
-      )}
-      {openDelete && (
-        <DeleteDialog open={openDelete} handleClose={handleCloseDelete} />
-      )}
     </Box>
   );
 };

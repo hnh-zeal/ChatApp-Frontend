@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { CaretLeft } from "phosphor-react";
 import ProfileForm from "../../../sections/dashboard/Settings/ProfileForm";
-import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
-  const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.auth);
 
   return (
     <>

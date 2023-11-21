@@ -1,0 +1,13 @@
+/* Add this to your styles */
+.chat-input .emoji-box {
+  display: none;
+}
+
+.chat-input .emoji-button:hover + .emoji-box,
+.chat-input .emoji-box:hover {
+  display: inline-block;
+}
+
+.chat-input .emoji-box.visible {
+  display: inline-block;
+}

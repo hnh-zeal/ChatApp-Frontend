@@ -3,10 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
 
 import { v4 } from "uuid";
-// import S3 from "../../utils/s3";
-// import { S3_BUCKET_NAME } from "../../config";
+import S3 from "../../utils/s3";
+import { S3_BUCKET_NAME } from "../../config";
 import { FetchConversations } from "./conversation";
-import { socket, connectSocket } from "../../socket";
+// import { socket, connectSocket } from "../../socket";
 
 const initialState = {
   user: {},
@@ -295,24 +295,24 @@ export const UpdateUserProfile = (formValues) => {
 
     const key = v4();
 
-    // try {
-    //   S3.getSignedUrl(
-    //     "putObject",
-    //     { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
-    //     async (_err, presignedURL) => {
-    //       await fetch(presignedURL, {
-    //         method: "PUT",
-    //         body: file,
-    //         headers: {
-    //           "Content-Type": file.type,
-    //         },
-    //       });
-    //     }
-    //   );
+    try {
+      S3.getSignedUrl(
+        "putObject",
+        { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
+        async (_err, presignedURL) => {
+          await fetch(presignedURL, {
+            method: "PUT",
+            body: file,
+            headers: {
+              "Content-Type": file.type,
+            },
+          });
+        }
+      );
 
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    } catch (error) {
+      console.log(error);
+    }
 
     axios
       .patch(

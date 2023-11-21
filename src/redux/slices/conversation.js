@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import avatarUrl from "../../utils/avatarURL";
 
 const initialState = {
   chat: {
@@ -46,8 +47,7 @@ const slice = createSlice({
           user_id: user?._id,
           name: `${user?.firstName} ${user?.lastName}`,
           online: user?.status === "Online",
-          // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
-          img: user?.avatar,
+          img: avatarUrl(user?.avatar) || user?.firstName,
           msg: last_msg,
           time: last_msg_timestamp,
           unread: 0,
@@ -59,10 +59,6 @@ const slice = createSlice({
     },
     updateConversation(state, action) {
       const this_conversation = action.payload.conversation;
-      console.log(state.chat.conversations.filter(
-        (el) => el?.id === this_conversation._id
-      ) );
-
       state.chat.current_conversation = state.chat.conversations.filter(
         (el) => el?.id === this_conversation._id
       );
@@ -82,7 +78,7 @@ const slice = createSlice({
         user_id: user?._id,
         name: `${user?.firstName} ${user?.lastName}`,
         online: user?.status === "Online",
-        img: user?.avatar,
+        img: avatarUrl(user?.avatar) || user?.firstName,
         msg: last_msg || "",
         time: "9:36",
         unread: 0,
@@ -127,8 +123,7 @@ const slice = createSlice({
         user_id: user?._id,
         name: `${user?.firstName} ${user?.lastName}`,
         online: user?.status === "Online",
-        // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
-        img: user?.avatar,
+        img: avatarUrl(user?.avatar) || user?.firstName,
         msg: last_msg,
         time: "9:36",
         unread: 0,

@@ -14,8 +14,7 @@ import {
   StyledInputBase,
 } from "../../components/Search";
 import ChatElement from "../../components/ChatElement";
-// import { ChatList } from "../../data";
-import "../../global.css";
+import "../../assets/css/scrollbar.css";
 import {
   ArchiveBox,
   CircleDashed,
@@ -98,6 +97,8 @@ const Chats = () => {
             </Stack>
             <Divider />
           </Stack>
+
+          {/* Conversations List */}
           <Stack
             direction="column"
             className={"scrollbar"}

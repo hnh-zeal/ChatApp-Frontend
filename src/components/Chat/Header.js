@@ -23,11 +23,8 @@ import { socket } from "../../socket";
 import { useSearchParams } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  ClearCurrent,
-  FetchConversations,
-} from "../../redux/slices/conversation";
-import { ToggleSidebar, showSnackbar } from "../../redux/slices/app";
+import { ClearCurrent } from "../../redux/slices/conversation";
+import { ToggleSidebar } from "../../redux/slices/app";
 import { DeleteDialog } from "../../sections/dashboard/Contact";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -99,8 +96,7 @@ const ChatHeader = ({ id, img, msg, name, online, pinned, time, unread }) => {
     };
     switch (index) {
       case 0:
-        console.log("Contact Info");
-        break;
+        return dispatch(ToggleSidebar());
       case 1:
         console.log("Mute Notifications");
         break;
@@ -143,16 +139,17 @@ const ChatHeader = ({ id, img, msg, name, online, pinned, time, unread }) => {
           spacing={2}
           direction="row"
         >
-          <Box>
+          <Box
+            onClick={() => {
+              dispatch(ToggleSidebar());
+            }}
+            style={{ cursor: "pointer" }}
+          >
             {online ? (
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 variant="dot"
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  dispatch(ToggleSidebar());
-                }}
               >
                 <Avatar alt={name} src={img} />
               </StyledBadge>

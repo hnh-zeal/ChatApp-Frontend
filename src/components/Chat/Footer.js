@@ -25,6 +25,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { useSelector } from "react-redux";
 import { socket } from "../../socket";
+// import "../../assets/css/chatinput.css";
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -74,107 +75,10 @@ const ChatInput = ({
   inputRef,
   handleKeyPress,
 }) => {
-  const [openActions, setOpenActions] = React.useState(false);
-
-  return (
-    <StyledInput
-      inputRef={inputRef}
-      value={value}
-      onChange={(event) => {
-        setValue(event.target.value);
-      }}
-      onKeyPress={handleKeyPress}
-      fullWidth
-      placeholder="Write a message..."
-      variant="filled"
-      InputProps={{
-        disableUnderline: true,
-        startAdornment: (
-          <Stack sx={{ width: "max-content" }}>
-            <Stack
-              sx={{
-                position: "relative",
-                display: openActions ? "inline-block" : "none",
-              }}
-            >
-              {Actions.map((el, index) => (
-                <Tooltip placement="right" key={index} title={el.title}>
-                  <Fab
-                    onClick={() => {
-                      setOpenActions(!openActions);
-                    }}
-                    sx={{
-                      position: "absolute",
-                      top: -el.y,
-                      backgroundColor: el.color,
-                    }}
-                    aria-label="add"
-                  >
-                    {el.icon}
-                  </Fab>
-                </Tooltip>
-              ))}
-            </Stack>
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => {
-                  setOpenActions(!openActions);
-                }}
-              >
-                <LinkSimple />
-              </IconButton>
-            </InputAdornment>
-          </Stack>
-        ),
-        endAdornment: (
-          <Stack sx={{ position: "relative" }}>
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => {
-                  setOpenPicker(!openPicker);
-                }}
-              >
-                <Smiley />
-              </IconButton>
-            </InputAdornment>
-          </Stack>
-        ),
-      }}
-    />
-  );
-};
-
-function linkify(text) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.replace(
-    urlRegex,
-    (url) => `<a href="${url}" target="_blank">${url}</a>`
-  );
-}
-
-function containsUrl(text) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return urlRegex.test(text);
-}
-
-const Footer = () => {
   const theme = useTheme();
-
-  const { current_conversation, current_messages } = useSelector(
-    (state) => state.conversation.chat
-  );
-
-  // const user_id = window.localStorage.getItem("user_id");
-  const { user_id } = useSelector((state) => state.auth);
-  const { room_id } = useSelector((state) => state.conversation);
-  const { sideBar } = useSelector((state) => state.app);
-
+  const [openActions, setOpenActions] = React.useState(false);
   const isMobile = useResponsive("between", "md", "xs", "sm");
-
-  const [openPicker, setOpenPicker] = React.useState(false);
-
-  const [value, setValue] = useState("");
-  const inputRef = useRef(null);
+  const { sideBar } = useSelector((state) => state.app);
 
   const handleEmojiClick = (emoji) => {
     const input = inputRef.current;
@@ -194,6 +98,163 @@ const Footer = () => {
     }
   };
 
+  return (
+    <>
+      <StyledInput
+        inputRef={inputRef}
+        value={value}
+        onChange={(event) => {
+          setValue(event.target.value);
+        }}
+        onKeyPress={handleKeyPress}
+        fullWidth
+        placeholder="Write a message..."
+        variant="filled"
+        InputProps={{
+          disableUnderline: true,
+          startAdornment: (
+            <Stack sx={{ width: "max-content" }}>
+              <Stack
+                sx={{
+                  position: "relative",
+                  display: openActions ? "inline-block" : "none",
+                }}
+              >
+                {Actions.map((el, index) => (
+                  <Tooltip placement="right" key={index} title={el.title}>
+                    <Fab
+                      onClick={() => {
+                        setOpenActions(!openActions);
+                      }}
+                      sx={{
+                        position: "absolute",
+                        top: -el.y,
+                        backgroundColor: el.color,
+                      }}
+                      aria-label="add"
+                    >
+                      {el.icon}
+                    </Fab>
+                  </Tooltip>
+                ))}
+              </Stack>
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => {
+                    setOpenActions(!openActions);
+                  }}
+                >
+                  <LinkSimple />
+                </IconButton>
+              </InputAdornment>
+            </Stack>
+          ),
+          endAdornment: (
+            // <Stack sx={{ position: "relative" }}>
+            //   <Box
+            //     onMouseEnter={() => {
+            //       setOpenPicker(true);
+            //     }}
+            //     onMouseLeave={() => {
+            //       setOpenPicker(false);
+            //     }}
+            //   >
+            //     <InputAdornment position="end">
+            //       <IconButton>
+            //         <Smiley />
+            //       </IconButton>
+            //     </InputAdornment>
+            //     {openPicker && (
+            //       <Box
+            //         style={{
+            //           zIndex: 10,
+            //           position: "fixed",
+            //           bottom: 81,
+            //           right: isMobile ? 20 : sideBar.open ? 420 : 100,
+            //         }}
+            //       >
+            //         <Picker
+            //           theme={theme.palette.mode}
+            //           data={data}
+            //           onEmojiSelect={(emoji) => {
+            //             handleEmojiClick(emoji.native);
+            //           }}
+            //         />
+            //       </Box>
+            //     )}
+            //   </Box>
+            // </Stack>
+            <Stack sx={{ position: "relative" }}>
+              <InputAdornment position="end">
+                <IconButton
+                  onMouseEnter={() => {
+                    setOpenPicker(true);
+                  }}
+                  onMouseLeave={() => {
+                    setOpenPicker(false);
+                  }}
+                >
+                  <Smiley />
+                </IconButton>
+              </InputAdornment>
+            </Stack>
+          ),
+        }}
+      />
+      <Box
+        style={{
+          zIndex: 10,
+          position: "fixed",
+          display: openPicker ? "inline" : "none",
+          bottom: 81,
+          right: isMobile ? 20 : sideBar.open ? 420 : 100,
+        }}
+      >
+        {openPicker && (
+          <Picker
+            theme={theme.palette.mode}
+            data={data}
+            onEmojiSelect={(emoji) => {
+              handleEmojiClick(emoji.native);
+            }}
+          />
+        )}
+      </Box>
+    </>
+  );
+};
+
+function linkify(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(
+    urlRegex,
+    (url) => `<a href="${url}" target="_blank">${url}</a>`
+  );
+}
+
+function containsUrl(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return urlRegex.test(text);
+}
+
+const Footer = () => {
+  const theme = useTheme();
+
+  const { current_conversation } = useSelector(
+    (state) => state.conversation.chat
+  );
+
+  // const user_id = window.localStorage.getItem("user_id");
+  const { user_id } = useSelector((state) => state.auth);
+  const { room_id } = useSelector((state) => state.conversation);
+
+  const isMobile = useResponsive("between", "md", "xs", "sm");
+
+  const [openPicker, setOpenPicker] = React.useState(false);
+
+  const [value, setValue] = useState("");
+  const inputRef = useRef(null);
+
   const handleInputKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent the default behavior (e.g., line break)
@@ -202,11 +263,11 @@ const Footer = () => {
         return; // Don't send empty messages
       }
 
-      emit_text_message(); // emit socket
+      emitTextMessage(); // emit socket
     }
   };
 
-  const emit_text_message = () => {
+  const emitTextMessage = () => {
     if (value.trim() === "") {
       return; // Don't send empty messages
     } else {
@@ -245,23 +306,6 @@ const Footer = () => {
       >
         <Stack direction="row" alignItems={"center"} spacing={isMobile ? 1 : 3}>
           <Stack sx={{ width: "100%" }}>
-            <Box
-              style={{
-                zIndex: 10,
-                position: "fixed",
-                display: openPicker ? "inline" : "none",
-                bottom: 81,
-                right: isMobile ? 20 : sideBar.open ? 420 : 100,
-              }}
-            >
-              <Picker
-                theme={theme.palette.mode}
-                data={data}
-                onEmojiSelect={(emoji) => {
-                  handleEmojiClick(emoji.native);
-                }}
-              />
-            </Box>
             {/* Chat Input */}
             <ChatInput
               inputRef={inputRef}
@@ -285,7 +329,7 @@ const Footer = () => {
               alignItems={"center"}
               justifyContent="center"
             >
-              <IconButton onClick={emit_text_message}>
+              <IconButton onClick={emitTextMessage}>
                 <PaperPlaneTilt color="#ffffff" />
               </IconButton>
             </Stack>
